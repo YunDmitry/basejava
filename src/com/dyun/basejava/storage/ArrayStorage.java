@@ -8,21 +8,22 @@ import java.util.Arrays;
  * Array based storage for Resumes
  */
 public class ArrayStorage {
-    private int maxStorageSize = 3;
+    private static final int maxStorageSize = 10000;
 
     private Resume[] storage = new Resume[maxStorageSize];
 
     private int size = 0;
 
     public void clear() {
-        Arrays.fill(storage, null);
+        Arrays.fill(Arrays.copyOfRange(storage, 0, size), null);
         size = 0;
     }
 
-    public void save(Resume r) {
-        if (get(r.getUuid()) == null) {
+    public void save(Resume resume) {
+        int index = getIndex(resume.getUuid());
+        if (index == -1) {
             if (size < maxStorageSize) {
-                storage[size] = r;
+                storage[size] = resume;
                 size++;
             } else {
                 System.out.println("ERROR: Storage is full. Capacity = " + maxStorageSize);
@@ -32,27 +33,29 @@ public class ArrayStorage {
         }
     }
 
-    public void update(Resume r) {
-        if (get(r.getUuid()) != null) {
-            //resume is founded
+    public void update(Resume resume) {
+        int index = getIndex(resume.getUuid());
+        if (index > -1) {
+            storage[index] = resume;
         } else {
             System.out.println("ERROR: Resume is not found");
         }
     }
 
     public Resume get(String uuid) {
-        int resumeNum = getNumber(uuid);
-        if (resumeNum > -1) {
-            return storage[resumeNum];
+        int index = getIndex(uuid);
+        if (index > -1) {
+            return storage[index];
         } else {
+            System.out.println("ERROR: Resume is not found");
             return null;
         }
     }
 
     public void delete(String uuid) {
-        int resumeNum = getNumber(uuid);
-        if (resumeNum > -1) {
-            storage[resumeNum] = storage[size - 1];
+        int index = getIndex(uuid);
+        if (index > -1) {
+            storage[index] = storage[size - 1];
             storage[size - 1] = null;
             size--;
         } else {
@@ -72,13 +75,12 @@ public class ArrayStorage {
         return size;
     }
 
-    private int getNumber(String uuid) {
+    private int getIndex(String uuid) {
         for (int i = 0; i < size; i++) {
             if (storage[i].getUuid().equals(uuid)) {
                 return i;
             }
         }
-        //дошли до конца массива, резюме не нашли
         return -1;
     }
 

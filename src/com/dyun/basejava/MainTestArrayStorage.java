@@ -26,8 +26,6 @@ public class MainTestArrayStorage {
         ARRAY_STORAGE.save(r2);
         System.out.println("Saving... r3");
         ARRAY_STORAGE.save(r3);
-        System.out.println("Saving... r4");
-        ARRAY_STORAGE.save(r4);
         System.out.println("--end save block");
         System.out.println();
 
