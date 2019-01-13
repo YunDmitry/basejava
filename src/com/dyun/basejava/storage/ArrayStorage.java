@@ -8,14 +8,14 @@ import java.util.Arrays;
  * Array based storage for Resumes
  */
 public class ArrayStorage {
-    private static final int maxStorageSize = 10000;
+    private static final int maxStorageSize = 10_000;
 
     private Resume[] storage = new Resume[maxStorageSize];
 
     private int size = 0;
 
     public void clear() {
-        Arrays.fill(Arrays.copyOfRange(storage, 0, size), null);
+        Arrays.fill(storage, 0, size - 1, null);
         size = 0;
     }
 
