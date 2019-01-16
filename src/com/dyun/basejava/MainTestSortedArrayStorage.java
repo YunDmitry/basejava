@@ -47,11 +47,6 @@ public class MainTestSortedArrayStorage {
         System.out.println("--get end block");
         System.out.println();
 
-        //System.out.println("--binarySearch block");
-        //System.out.println("Index of r2: " + Arrays.binarySearch(ARRAY_STORAGE.storage, 0, ARRAY_STORAGE.size(), r2));
-        //System.out.println("--binarySearch end block");
-        //System.out.println();
-
         System.out.println("--delete block");
         System.out.println("Deleting... r1:" + ARRAY_STORAGE.get(r1.getUuid()));
         ARRAY_STORAGE.delete(r1.getUuid());
