@@ -2,16 +2,25 @@ package com.dyun.basejava.storage;
 
 import com.dyun.basejava.model.Resume;
 
+import java.util.Arrays;
+
 /**
  * Array based storage for Resumes
  */
-public class ArrayStorage extends AbstractArrayStorage {
+public class SortedArrayStorage extends AbstractArrayStorage {
 
     public void save(Resume resume) {
         int index = getIndex(resume.getUuid());
-        if (index == -1) {
+        System.out.println(index);
+        System.out.println(-index - 1);
+        if (index < 0) {
             if (size < MAX_STORAGE_SIZE) {
-                storage[size] = resume;
+                int indexAdd = -index - 1;
+                /*for (int i = size; i > indexAdd; i--) {
+                    storage[i] = storage[i - 1];
+                }*/
+                System.arraycopy(storage, indexAdd, storage, indexAdd + 1, size - indexAdd);
+                storage[indexAdd] = resume;
                 size++;
             } else {
                 System.out.println("ERROR: Storage is full. Capacity = " + MAX_STORAGE_SIZE);
@@ -24,7 +33,10 @@ public class ArrayStorage extends AbstractArrayStorage {
     public void delete(String uuid) {
         int index = getIndex(uuid);
         if (index > -1) {
-            storage[index] = storage[size - 1];
+            /*for (int i = index; i < size; i++) {
+                storage[i] = storage[i + 1];
+            }*/
+            System.arraycopy(storage, index, storage, index - 1, size - index);
             storage[size - 1] = null;
             size--;
         } else {
@@ -34,12 +46,9 @@ public class ArrayStorage extends AbstractArrayStorage {
     }
 
     protected int getIndex(String uuid) {
-        for (int i = 0; i < size; i++) {
-            if (storage[i].getUuid().equals(uuid)) {
-                return i;
-            }
-        }
-        return -1;
+        Resume searchKey = new Resume();
+        searchKey.setUuid(uuid);
+        return Arrays.binarySearch(storage, 0, size, searchKey);
     }
 
 }
