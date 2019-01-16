@@ -5,7 +5,7 @@ import com.dyun.basejava.storage.SortedArrayStorage;
 import com.dyun.basejava.storage.Storage;
 
 /**
- * Test for your com.dyun.basejava.storage.ArrayStorage implementation
+ * Test for your com.dyun.basejava.storage.SortedArrayStorage implementation
  */
 public class MainTestSortedArrayStorage {
     private static final Storage ARRAY_STORAGE = new SortedArrayStorage();
