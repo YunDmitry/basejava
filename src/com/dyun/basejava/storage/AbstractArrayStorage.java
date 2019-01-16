@@ -5,7 +5,7 @@ import com.dyun.basejava.model.Resume;
 import java.util.Arrays;
 
 /**
- * Array based storage for Resumes
+ * Abstract Array based storage for Resumes
  */
 public abstract class AbstractArrayStorage implements Storage {
     protected static final int MAX_STORAGE_SIZE = 100_000;
@@ -28,7 +28,19 @@ public abstract class AbstractArrayStorage implements Storage {
         }
     }
 
-    public abstract void save(Resume resume);
+    public void save(Resume resume) {
+        int index = getIndex(resume.getUuid());
+        if (index < 0) {
+            if (size < MAX_STORAGE_SIZE) {
+                addResume(index, resume);
+                size++;
+            } else {
+                System.out.println("ERROR: Storage is full. Capacity = " + MAX_STORAGE_SIZE);
+            }
+        } else {
+            System.out.println("ERROR: Resume " + resume.getUuid() + " is already saved");
+        }
+    }
 
     public void update(Resume resume) {
         int index = getIndex(resume.getUuid());
@@ -37,6 +49,18 @@ public abstract class AbstractArrayStorage implements Storage {
         } else {
             System.out.println("ERROR: Resume " + resume.getUuid() + " is not found");
         }
+    }
+
+    public void delete(String uuid) {
+        int index = getIndex(uuid);
+        if (index > -1) {
+            removeResume(index);
+            storage[size - 1] = null;
+            size--;
+        } else {
+            System.out.println("ERROR: Resume " + uuid + " is not found");
+        }
+
     }
 
     /**
@@ -52,5 +76,9 @@ public abstract class AbstractArrayStorage implements Storage {
     }
 
     protected abstract int getIndex(String uuid);
+
+    protected abstract void addResume(int index, Resume resume);
+
+    protected abstract void removeResume(int index);
 
 }

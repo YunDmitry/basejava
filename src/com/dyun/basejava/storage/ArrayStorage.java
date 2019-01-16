@@ -7,32 +7,17 @@ import com.dyun.basejava.model.Resume;
  */
 public class ArrayStorage extends AbstractArrayStorage {
 
-    public void save(Resume resume) {
-        int index = getIndex(resume.getUuid());
-        if (index == -1) {
-            if (size < MAX_STORAGE_SIZE) {
-                storage[size] = resume;
-                size++;
-            } else {
-                System.out.println("ERROR: Storage is full. Capacity = " + MAX_STORAGE_SIZE);
-            }
-        } else {
-            System.out.println("ERROR: Resume " + resume.getUuid() + " is already saved");
-        }
+    @Override
+    protected void addResume(int index, Resume resume) {
+        storage[size] = resume;
     }
 
-    public void delete(String uuid) {
-        int index = getIndex(uuid);
-        if (index > -1) {
-            storage[index] = storage[size - 1];
-            storage[size - 1] = null;
-            size--;
-        } else {
-            System.out.println("ERROR: Resume " + uuid + " is not found");
-        }
-
+    @Override
+    protected void removeResume(int index) {
+        storage[index] = storage[size - 1];
     }
 
+    @Override
     protected int getIndex(String uuid) {
         for (int i = 0; i < size; i++) {
             if (storage[i].getUuid().equals(uuid)) {
