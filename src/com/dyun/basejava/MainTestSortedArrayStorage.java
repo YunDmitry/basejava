@@ -12,14 +12,10 @@ public class MainTestSortedArrayStorage {
 
     public static void main(String[] args) {
 
-        Resume r1 = new Resume();
-        r1.setUuid("uuid2");
-        Resume r2 = new Resume();
-        r2.setUuid("uuid1");
-        Resume r3 = new Resume();
-        r3.setUuid("uuid3");
-        Resume r4 = new Resume();  //not for saving
-        r4.setUuid("uuid4");
+        Resume r1 = new Resume("uuid2");
+        Resume r2 = new Resume("uuid1");
+        Resume r3 = new Resume("uuid3");
+        Resume r4 = new Resume("uuid4");  //not for saving
 
         System.out.println("--save block");
         System.out.println("Saving... r1");

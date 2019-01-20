@@ -1,5 +1,8 @@
 package com.dyun.basejava.storage;
 
+import com.dyun.basejava.exception.ExistStorageException;
+import com.dyun.basejava.exception.NotExistStorageException;
+import com.dyun.basejava.exception.StorageException;
 import com.dyun.basejava.model.Resume;
 
 import java.util.Arrays;
@@ -23,8 +26,7 @@ public abstract class AbstractArrayStorage implements Storage {
         if (index > -1) {
             return storage[index];
         } else {
-            System.out.println("ERROR: Resume " + uuid + " is not found");
-            return null;
+            throw new NotExistStorageException(uuid);
         }
     }
 
@@ -35,10 +37,10 @@ public abstract class AbstractArrayStorage implements Storage {
                 addResume(index, resume);
                 size++;
             } else {
-                System.out.println("ERROR: Storage is full. Capacity = " + MAX_STORAGE_SIZE);
+                throw new StorageException("Storage overflow", resume.getUuid());
             }
         } else {
-            System.out.println("ERROR: Resume " + resume.getUuid() + " is already saved");
+            throw new ExistStorageException(resume.getUuid());
         }
     }
 
@@ -47,7 +49,7 @@ public abstract class AbstractArrayStorage implements Storage {
         if (index > -1) {
             storage[index] = resume;
         } else {
-            System.out.println("ERROR: Resume " + resume.getUuid() + " is not found");
+            throw new NotExistStorageException(resume.getUuid());
         }
     }
 
@@ -58,7 +60,7 @@ public abstract class AbstractArrayStorage implements Storage {
             storage[size - 1] = null;
             size--;
         } else {
-            System.out.println("ERROR: Resume " + uuid + " is not found");
+            throw new NotExistStorageException(uuid);
         }
 
     }
