@@ -8,8 +8,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public abstract class AbstractArrayStorageTest {
-    private Storage storage;
+public class ListStorageTest {
+    private Storage storage = new ListStorage();
     private static final String UUID1 = "uuid1";
     private static final String UUID2 = "uuid2";
     private static final String UUID3 = "uuid3";
@@ -18,10 +18,6 @@ public abstract class AbstractArrayStorageTest {
     private static final Resume RESUME_2 = new Resume(UUID2);
     private static final Resume RESUME_3 = new Resume(UUID3);
     private static final Resume RESUME_4 = new Resume(UUID4);
-
-    protected AbstractArrayStorageTest(Storage storage) {
-        this.storage = storage;
-    }
 
     @Before
     public void setUp() throws Exception {
@@ -58,21 +54,6 @@ public abstract class AbstractArrayStorageTest {
         storage.save(RESUME_2);
     }
 
-
-    @Test(expected = StorageException.class)
-    public void saveOverflow() {
-        try {
-            storage.clear();
-            for (int i = 1; i <= AbstractArrayStorage.MAX_STORAGE_SIZE; i++) {
-                storage.save(new Resume("uuid" + i));
-            }
-        } catch (StorageException e) {
-            Assert.fail("Error before storage is filled");
-        }
-
-        storage.save(new Resume("UUID_overflow"));
-    }
-
     @Test
     public void update() {
         Resume resumeNew = new Resume(UUID3);
@@ -103,7 +84,9 @@ public abstract class AbstractArrayStorageTest {
 
     @Test
     public void getAll() {
-        Assert.assertArrayEquals(new Resume[]{RESUME_1, RESUME_2, RESUME_3}, storage.getAll());
+        Assert.assertSame(RESUME_1, storage.get(UUID1));
+        Assert.assertSame(RESUME_2, storage.get(UUID2));
+        Assert.assertSame(RESUME_3, storage.get(UUID3));
         Assert.assertEquals(3, storage.getAll().length);
     }
 
