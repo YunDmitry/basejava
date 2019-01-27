@@ -55,13 +55,13 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected void updateElement(Resume resume) {
-        storage[searchKey(resume.getUuid())] = resume;
+    protected void updateElement(int key, Resume resume) {
+        storage[key] = resume;
     }
 
     @Override
-    protected void removeElement(String uuid) {
-        removeResume(searchKey(uuid));
+    protected void removeElement(int key, String uuid) {
+        removeResume(key);
         storage[size - 1] = null;
         size--;
     }

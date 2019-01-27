@@ -27,7 +27,7 @@ public abstract class AbstractStorage implements Storage {
     public void update(Resume resume) {
         int key = searchKey(resume.getUuid());
         if (checkKey(key)) {
-            updateElement(resume);
+            updateElement(key, resume);
         } else {
             throw new NotExistStorageException(resume.getUuid());
         }
@@ -36,7 +36,7 @@ public abstract class AbstractStorage implements Storage {
     public void delete(String uuid) {
         int key = searchKey(uuid);
         if (checkKey(key)) {
-            removeElement(uuid);
+            removeElement(key, uuid);
         } else {
             throw new NotExistStorageException(uuid);
         }
@@ -60,7 +60,7 @@ public abstract class AbstractStorage implements Storage {
 
     protected abstract void addElement(Resume resume);
 
-    protected abstract void updateElement(Resume resume);
+    protected abstract void updateElement(int key, Resume resume);
 
-    protected abstract void removeElement(String uuid);
+    protected abstract void removeElement(int key, String uuid);
 }

@@ -56,12 +56,12 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected void updateElement(Resume resume) {
-        storage.set(storage.indexOf(resume), resume);
+    protected void updateElement(int key, Resume resume) {
+        storage.set(key, resume);
     }
 
     @Override
-    protected void removeElement(String uuid) {
-        storage.remove(new Resume(uuid));
+    protected void removeElement(int key, String uuid) {
+        storage.remove(key);
     }
 }
