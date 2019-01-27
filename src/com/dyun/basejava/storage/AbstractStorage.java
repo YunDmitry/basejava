@@ -2,45 +2,31 @@ package com.dyun.basejava.storage;
 
 import com.dyun.basejava.exception.ExistStorageException;
 import com.dyun.basejava.exception.NotExistStorageException;
-import com.dyun.basejava.exception.StorageException;
 import com.dyun.basejava.model.Resume;
 
 public abstract class AbstractStorage implements Storage {
-    private boolean hasMaxStorageSizeLimit;
-    private int maxStorageSize;
-
-    protected AbstractStorage() {
-        this.hasMaxStorageSizeLimit = false;
-        this.maxStorageSize = 0;
-    }
-
-    protected AbstractStorage(boolean hasMaxStorageSizeLimit, int maxStorageSize) {
-        this.hasMaxStorageSizeLimit = hasMaxStorageSizeLimit;
-        this.maxStorageSize = maxStorageSize;
-    }
 
     public Resume get(String uuid) {
-        if (hasElement(uuid)) {
-            return getElement(uuid);
+        int key = searchKey(uuid);
+        if (checkKey(key)) {
+            return doGet(key);
         } else {
             throw new NotExistStorageException(uuid);
         }
     }
 
     public void save(Resume resume) {
-        if (!hasElement(resume.getUuid())) {
-            if (!hasMaxStorageSizeLimit || (hasMaxStorageSizeLimit && size() < maxStorageSize)) {
-                addElement(resume);
-            } else {
-                throw new StorageException("Storage overflow", resume.getUuid());
-            }
+        int key = searchKey(resume.getUuid());
+        if (!checkKey(key)) {
+            addElement(resume);
         } else {
             throw new ExistStorageException(resume.getUuid());
         }
     }
 
     public void update(Resume resume) {
-        if (hasElement(resume.getUuid())) {
+        int key = searchKey(resume.getUuid());
+        if (checkKey(key)) {
             updateElement(resume);
         } else {
             throw new NotExistStorageException(resume.getUuid());
@@ -48,7 +34,8 @@ public abstract class AbstractStorage implements Storage {
     }
 
     public void delete(String uuid) {
-        if (hasElement(uuid)) {
+        int key = searchKey(uuid);
+        if (checkKey(key)) {
             removeElement(uuid);
         } else {
             throw new NotExistStorageException(uuid);
@@ -65,9 +52,11 @@ public abstract class AbstractStorage implements Storage {
 
     public abstract void clear();
 
-    protected abstract boolean hasElement(String uuid);
+    protected abstract boolean checkKey(int key);
 
-    protected abstract Resume getElement(String uuid);
+    protected abstract int searchKey(String uuid);
+
+    protected abstract Resume doGet(int key);
 
     protected abstract void addElement(Resume resume);
 

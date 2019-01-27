@@ -12,10 +12,6 @@ public class ListStorage extends AbstractStorage {
 
     private List<Resume> storage = new ArrayList<>();
 
-    protected ListStorage() {
-        super(false, 0);
-    }
-
     @Override
     public int size() {
         return storage.size();
@@ -35,13 +31,23 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected boolean hasElement(String uuid) {
-        return storage.contains(new Resume(uuid));
+    protected int searchKey(String uuid) {
+        for (int i = 0; i < storage.size(); i++) {
+            if (storage.get(i).equals(new Resume(uuid))) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     @Override
-    protected Resume getElement(String uuid) {
-        return storage.get(storage.indexOf(new Resume(uuid)));
+    protected boolean checkKey(int key) {
+        return key > -1;
+    }
+
+    @Override
+    protected Resume doGet(int key) {
+        return storage.get(key);
     }
 
     @Override

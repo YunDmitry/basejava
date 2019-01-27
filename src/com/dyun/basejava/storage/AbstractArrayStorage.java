@@ -1,5 +1,6 @@
 package com.dyun.basejava.storage;
 
+import com.dyun.basejava.exception.StorageException;
 import com.dyun.basejava.model.Resume;
 
 import java.util.Arrays;
@@ -13,10 +14,6 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     protected Resume[] storage = new Resume[MAX_STORAGE_SIZE];
 
     protected int size = 0;
-
-    protected AbstractArrayStorage() {
-        super(true, MAX_STORAGE_SIZE);
-    }
 
     @Override
     public int size() {
@@ -38,35 +35,36 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected boolean hasElement(String uuid) {
-        return getIndex(uuid) > -1;
+    protected boolean checkKey(int key) {
+        return key > -1;
     }
 
     @Override
-    protected Resume getElement(String uuid) {
-        return storage[getIndex(uuid)];
+    protected Resume doGet(int key) {
+        return storage[key];
     }
 
     @Override
     protected void addElement(Resume resume) {
-        addResume(getIndex(resume.getUuid()), resume);
-        size++;
+        if (size < MAX_STORAGE_SIZE) {
+            addResume(searchKey(resume.getUuid()), resume);
+            size++;
+        } else {
+            throw new StorageException("Storage overflow", resume.getUuid());
+        }
     }
 
     @Override
     protected void updateElement(Resume resume) {
-        storage[getIndex(resume.getUuid())] = resume;
+        storage[searchKey(resume.getUuid())] = resume;
     }
 
     @Override
     protected void removeElement(String uuid) {
-        removeResume(getIndex(uuid));
+        removeResume(searchKey(uuid));
         storage[size - 1] = null;
         size--;
     }
-
-
-    protected abstract int getIndex(String uuid);
 
     protected abstract void addResume(int index, Resume resume);
 

@@ -12,10 +12,6 @@ public class MapStorage extends AbstractStorage {
 
     private Map<String, Resume> storage = new HashMap<>();
 
-    protected MapStorage() {
-        super(false, 0);
-    }
-
     @Override
     public int size() {
         return storage.size();
@@ -40,13 +36,18 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    protected boolean hasElement(String uuid) {
-        return storage.containsKey(uuid);
+    protected int searchKey(String uuid) {
+        return -1;  //NOT FINISHED
     }
 
     @Override
-    protected Resume getElement(String uuid) {
-        return storage.get(uuid);
+    protected boolean checkKey(int key) {
+        return false;  //NOT FINISHED
+    }
+
+    @Override
+    protected Resume doGet(int key) {
+        return null;   //NOT FINISHED
     }
 
     @Override
