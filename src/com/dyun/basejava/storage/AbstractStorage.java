@@ -7,16 +7,16 @@ import com.dyun.basejava.model.Resume;
 public abstract class AbstractStorage implements Storage {
 
     public Resume get(String uuid) {
-        int key = (Integer) searchKey(uuid);
+        Object key = searchKey(uuid);
         if (checkKey(key)) {
-            return getElement(key, null);
+            return getElement(key);
         } else {
             throw new NotExistStorageException(uuid);
         }
     }
 
     public void save(Resume resume) {
-        int key = (Integer) searchKey(resume.getUuid());
+        Object key = searchKey(resume.getUuid());
         if (!checkKey(key)) {
             addElement(key, resume);
         } else {
@@ -25,7 +25,7 @@ public abstract class AbstractStorage implements Storage {
     }
 
     public void update(Resume resume) {
-        int key = (Integer) searchKey(resume.getUuid());
+        Object key = searchKey(resume.getUuid());
         if (checkKey(key)) {
             updateElement(key, resume);
         } else {
@@ -34,7 +34,7 @@ public abstract class AbstractStorage implements Storage {
     }
 
     public void delete(String uuid) {
-        int key = (Integer) searchKey(uuid);
+        Object key = searchKey(uuid);
         if (checkKey(key)) {
             removeElement(key);
         } else {
@@ -56,11 +56,11 @@ public abstract class AbstractStorage implements Storage {
 
     protected abstract Object searchKey(String uuid);
 
-    protected abstract Resume getElement(int key, String keyString);
+    protected abstract Resume getElement(Object key);
 
-    protected abstract void addElement(int key, Resume resume);
+    protected abstract void addElement(Object key, Resume resume);
 
-    protected abstract void updateElement(int key, Resume resume);
+    protected abstract void updateElement(Object key, Resume resume);
 
-    protected abstract void removeElement(int key);
+    protected abstract void removeElement(Object key);
 }

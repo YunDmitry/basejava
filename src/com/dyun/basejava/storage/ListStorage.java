@@ -46,22 +46,25 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected Resume getElement(int key, String keyString) {
-        return storage.get(key);
+    protected Resume getElement(Object key) {
+        int index = (Integer) key;
+        return storage.get(index);
     }
 
     @Override
-    protected void addElement(int key, Resume resume) {
+    protected void addElement(Object key, Resume resume) {
         storage.add(resume);
     }
 
     @Override
-    protected void updateElement(int key, Resume resume) {
-        storage.set(key, resume);
+    protected void updateElement(Object key, Resume resume) {
+        int index = (Integer) key;
+        storage.set(index, resume);
     }
 
     @Override
-    protected void removeElement(int key) {
-        storage.remove(key);
+    protected void removeElement(Object key) {
+        int index = (Integer) key;
+        storage.remove(index);
     }
 }

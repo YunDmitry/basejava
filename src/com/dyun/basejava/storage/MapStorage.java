@@ -42,26 +42,31 @@ public class MapStorage extends AbstractStorage {
 
     @Override
     protected boolean checkKey(Object key) {
-        return storage.containsKey((String) key);
+        String uuid = (String) key;
+        return storage.containsKey(uuid);
     }
 
     @Override
-    protected Resume getElement(int key, String keyString) {
-        return storage.get(keyString);
+    protected Resume getElement(Object key) {
+        String uuid = (String) key;
+        return storage.get(uuid);
     }
 
     @Override
-    protected void addElement(int key, Resume resume) {
-        storage.put(resume.getUuid(), resume);
+    protected void addElement(Object key, Resume resume) {
+        String uuid = (String) key;
+        storage.put(uuid, resume);
     }
 
     @Override
-    protected void updateElement(int key, Resume resume) {
-        storage.put(resume.getUuid(), resume);
+    protected void updateElement(Object key, Resume resume) {
+        String uuid = (String) key;
+        storage.put(uuid, resume);
     }
 
     @Override
-    protected void removeElement(int key) {
-        //storage.remove(uuid);  //NOT FINISHED
+    protected void removeElement(Object key) {
+        String uuid = (String) key;
+        storage.remove(uuid);
     }
 }
