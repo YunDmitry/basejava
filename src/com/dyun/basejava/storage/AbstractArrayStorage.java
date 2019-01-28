@@ -36,7 +36,8 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
 
     @Override
     protected boolean checkKey(Object key) {
-        return (Integer) key > -1;
+        int index = (Integer) key;
+        return index > -1;
     }
 
     @Override
