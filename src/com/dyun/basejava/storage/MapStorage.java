@@ -46,12 +46,12 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    protected Resume doGet(int key) {
+    protected Resume getElement(int key) {
         return null;   //NOT FINISHED
     }
 
     @Override
-    protected void addElement(Resume resume) {
+    protected void addElement(int key, Resume resume) {
         storage.put(resume.getUuid(), resume);
     }
 
@@ -61,7 +61,7 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    protected void removeElement(int key, String uuid) {
-        storage.remove(uuid);
+    protected void removeElement(int key) {
+        //storage.remove(uuid);  //NOT FINISHED
     }
 }
