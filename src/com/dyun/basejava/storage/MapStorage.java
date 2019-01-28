@@ -24,7 +24,7 @@ public class MapStorage extends AbstractStorage {
     public Resume[] getAll() {
         Resume[] resumeArray = new Resume[storage.size()];
         int i = 0;
-        for (Map.Entry<String, Resume> entry: storage.entrySet()) {
+        for (Map.Entry<String, Resume> entry : storage.entrySet()) {
             resumeArray[i] = entry.getValue();
         }
         return resumeArray;
@@ -36,18 +36,18 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    protected int searchKey(String uuid) {
-        return -1;  //NOT FINISHED
+    protected String searchKey(String uuid) {
+        return uuid;
     }
 
     @Override
-    protected boolean checkKey(int key) {
-        return false;  //NOT FINISHED
+    protected boolean checkKey(Object key) {
+        return storage.containsKey((String) key);
     }
 
     @Override
-    protected Resume getElement(int key) {
-        return null;   //NOT FINISHED
+    protected Resume getElement(int key, String keyString) {
+        return storage.get(keyString);
     }
 
     @Override

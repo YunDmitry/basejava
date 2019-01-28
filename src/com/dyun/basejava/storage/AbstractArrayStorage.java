@@ -35,12 +35,12 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected boolean checkKey(int key) {
-        return key > -1;
+    protected boolean checkKey(Object key) {
+        return (Integer) key > -1;
     }
 
     @Override
-    protected Resume getElement(int key) {
+    protected Resume getElement(int key, String keyString) {
         return storage[key];
     }
 
