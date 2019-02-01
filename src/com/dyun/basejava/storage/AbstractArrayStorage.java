@@ -15,6 +15,10 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
 
     protected int size = 0;
 
+    protected abstract void addResume(int index, Resume resume);
+
+    protected abstract void removeResume(int index);
+
     @Override
     public int size() {
         return size;
@@ -70,9 +74,4 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         storage[size - 1] = null;
         size--;
     }
-
-    protected abstract void addResume(int index, Resume resume);
-
-    protected abstract void removeResume(int index);
-
 }

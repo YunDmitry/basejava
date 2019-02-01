@@ -32,6 +32,9 @@ public abstract class AbstractStorageTest {
     }
 
     @Test
+    public abstract void saveOverflow();
+
+    @Test
     public void size() {
         Assert.assertEquals(3, storage.size());
     }
@@ -99,7 +102,4 @@ public abstract class AbstractStorageTest {
         storage.clear();
         Assert.assertEquals(0, storage.size());
     }
-
-    @Test
-    public abstract void saveOverflow();
 }
