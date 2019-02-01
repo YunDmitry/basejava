@@ -8,16 +8,22 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
+
 public abstract class AbstractStorageTest {
     protected Storage storage;
     private static final String UUID1 = "uuid1";
+    private static final String FULLNAME1 = "Sidorov Igor";
     private static final String UUID2 = "uuid2";
+    private static final String FULLNAME2 = "Sidorov Igor";
     private static final String UUID3 = "uuid3";
+    private static final String FULLNAME3 = "Ivanov Roman";
     private static final String UUID4 = "uuid4";
-    private static final Resume RESUME_1 = new Resume(UUID1);
-    private static final Resume RESUME_2 = new Resume(UUID2);
-    private static final Resume RESUME_3 = new Resume(UUID3);
-    private static final Resume RESUME_4 = new Resume(UUID4);
+    private static final String FULLNAME4 = "Romanova Svetlana";
+    private static final Resume RESUME_1 = new Resume(UUID1, FULLNAME1);
+    private static final Resume RESUME_2 = new Resume(UUID2, FULLNAME2);
+    private static final Resume RESUME_3 = new Resume(UUID3, FULLNAME3);
+    private static final Resume RESUME_4 = new Resume(UUID4, FULLNAME4);
 
     protected AbstractStorageTest(Storage storage) {
         this.storage = storage;
@@ -27,8 +33,8 @@ public abstract class AbstractStorageTest {
     public void setUp() throws Exception {
         storage.clear();
         storage.save(RESUME_1);
-        storage.save(RESUME_2);
         storage.save(RESUME_3);
+        storage.save(RESUME_2);
     }
 
     @Test
@@ -63,7 +69,7 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void update() {
-        Resume resumeNew = new Resume(UUID3);
+        Resume resumeNew = new Resume(UUID3, "New FullName");
         storage.update(resumeNew);
         Assert.assertSame(resumeNew, storage.get(UUID3));
     }
@@ -90,11 +96,9 @@ public abstract class AbstractStorageTest {
     }
 
     @Test
-    public void getAll() {
-        Assert.assertSame(RESUME_1, storage.get(UUID1));
-        Assert.assertSame(RESUME_2, storage.get(UUID2));
-        Assert.assertSame(RESUME_3, storage.get(UUID3));
-        Assert.assertEquals(3, storage.getAll().length);
+    public void getAllSorted() {
+        Assert.assertEquals(storage.getAllSorted(), Arrays.asList(RESUME_3, RESUME_1, RESUME_2));
+        Assert.assertEquals(3, storage.getAllSorted().size());
     }
 
     @Test

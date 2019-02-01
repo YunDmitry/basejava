@@ -3,11 +3,13 @@ package com.dyun.basejava.storage;
 import com.dyun.basejava.model.Resume;
 
 import java.util.Arrays;
+import java.util.Comparator;
 
 /**
  * Sorted Array based storage for Resumes
  */
 public class SortedArrayStorage extends AbstractArrayStorage {
+    private static final Comparator<Resume> UUID_COMPARATOR = Comparator.comparing(Resume::getUuid);
 
     @Override
     protected void addResume(int index, Resume resume) {
@@ -24,7 +26,6 @@ public class SortedArrayStorage extends AbstractArrayStorage {
     @Override
     protected Object searchKey(String uuid) {
         Resume key = new Resume(uuid);
-         return Arrays.binarySearch(storage, 0, size, key);
+         return Arrays.binarySearch(storage, 0, size, key, UUID_COMPARATOR);
     }
-
 }

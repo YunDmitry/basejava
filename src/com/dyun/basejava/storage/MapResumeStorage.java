@@ -3,13 +3,16 @@ package com.dyun.basejava.storage;
 import com.dyun.basejava.model.Resume;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
- * ArrayList based storage for Resumes
+ * HashMap based storage for Resumes
  */
-public class ListStorage extends AbstractStorage {
-    private List<Resume> storage = new ArrayList<>();
+public class MapResumeStorage extends AbstractStorage {
+
+    private Map<Resume, Resume> storage = new HashMap<>();
 
     @Override
     public int size() {
@@ -21,8 +24,9 @@ public class ListStorage extends AbstractStorage {
      */
     @Override
     public List<Resume> getAllSorted() {
-        storage.sort(FULLNAME_COMPARATOR);
-        return storage;
+        List<Resume> list = new ArrayList<>(storage.values());
+        list.sort(FULLNAME_COMPARATOR);
+        return list;
     }
 
     @Override
@@ -31,40 +35,35 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected Object searchKey(String uuid) {
-        for (int i = 0; i < storage.size(); i++) {
-            if (storage.get(i).getUuid().equals(uuid)) {
-                return i;
-            }
-        }
-        return -1;
+    protected Resume searchKey(String uuid) {
+        return storage.get(new Resume(uuid));
     }
 
     @Override
     protected boolean checkKey(Object key) {
-        return (Integer) key > -1;
+        Resume resume = (Resume) key;
+        return storage.containsKey(resume);
     }
 
     @Override
     protected Resume getElement(Object key) {
-        int index = (Integer) key;
-        return storage.get(index);
+        Resume resume = (Resume) key;
+        return storage.get(resume);
     }
 
     @Override
     protected void addElement(Object key, Resume resume) {
-        storage.add(resume);
+        storage.put(resume, resume);
     }
 
     @Override
     protected void updateElement(Object key, Resume resume) {
-        int index = (Integer) key;
-        storage.set(index, resume);
+        storage.put(resume, resume);
     }
 
     @Override
     protected void removeElement(Object key) {
-        int index = (Integer) key;
-        storage.remove(index);
+        Resume resume = (Resume) key;
+        storage.remove(resume);
     }
 }

@@ -2,7 +2,9 @@ package com.dyun.basejava.storage;
 
 import com.dyun.basejava.model.Resume;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -21,8 +23,10 @@ public class MapStorage extends AbstractStorage {
      * @return array, contains only Resumes in storage (without null)
      */
     @Override
-    public Resume[] getAll() {
-        return storage.values().toArray(new Resume[storage.size()]);
+    public List<Resume> getAllSorted() {
+        List<Resume> list = new ArrayList<>(storage.values());
+        list.sort(FULLNAME_COMPARATOR);
+        return list;
     }
 
     @Override

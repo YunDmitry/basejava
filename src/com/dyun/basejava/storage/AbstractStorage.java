@@ -4,7 +4,16 @@ import com.dyun.basejava.exception.ExistStorageException;
 import com.dyun.basejava.exception.NotExistStorageException;
 import com.dyun.basejava.model.Resume;
 
+import java.util.Comparator;
+import java.util.List;
+
 public abstract class AbstractStorage implements Storage {
+    protected static final Comparator<Resume> FULLNAME_COMPARATOR = (o1, o2) -> {
+        if (o1.getFullName().equals(o2.getFullName())) {
+            return o1.getUuid().compareTo(o2.getUuid());
+        }
+        return o1.getFullName().compareTo(o2.getFullName());
+    };
 
     public abstract int size();
 
@@ -15,7 +24,7 @@ public abstract class AbstractStorage implements Storage {
     /**
      * @return array, contains only Resumes in storage (without null)
      */
-    public abstract Resume[] getAll();
+    public abstract List<Resume> getAllSorted();
 
     public abstract void clear();
 

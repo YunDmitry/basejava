@@ -4,6 +4,7 @@ import com.dyun.basejava.exception.StorageException;
 import com.dyun.basejava.model.Resume;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Abstract Array based storage for Resumes
@@ -24,12 +25,11 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         return size;
     }
 
-    /**
-     * @return array, contains only Resumes in storage (without null)
-     */
     @Override
-    public Resume[] getAll() {
-        return Arrays.copyOfRange(storage, 0, size);
+    public List<Resume> getAllSorted() {
+        Resume[] filledArray = Arrays.copyOfRange(storage, 0, size);
+        Arrays.sort(filledArray, FULLNAME_COMPARATOR);
+        return Arrays.asList(filledArray);
     }
 
     @Override
