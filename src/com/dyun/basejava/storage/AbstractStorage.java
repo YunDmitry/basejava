@@ -6,44 +6,11 @@ import com.dyun.basejava.model.Resume;
 
 public abstract class AbstractStorage implements Storage {
 
-    public Resume get(String uuid) {
-        Object key = searchKey(uuid);
-        if (checkKey(key)) {
-            return getElement(key);
-        } else {
-            throw new NotExistStorageException(uuid);
-        }
-    }
-
-    public void save(Resume resume) {
-        Object key = searchKey(resume.getUuid());
-        if (!checkKey(key)) {
-            addElement(key, resume);
-        } else {
-            throw new ExistStorageException(resume.getUuid());
-        }
-    }
-
-    public void update(Resume resume) {
-        Object key = searchKey(resume.getUuid());
-        if (checkKey(key)) {
-            updateElement(key, resume);
-        } else {
-            throw new NotExistStorageException(resume.getUuid());
-        }
-    }
-
-    public void delete(String uuid) {
-        Object key = searchKey(uuid);
-        if (checkKey(key)) {
-            removeElement(key);
-        } else {
-            throw new NotExistStorageException(uuid);
-        }
-
-    }
-
     public abstract int size();
+
+    protected abstract Object searchKey(String uuid);
+
+    protected abstract boolean checkKey(Object key);
 
     /**
      * @return array, contains only Resumes in storage (without null)
@@ -52,10 +19,6 @@ public abstract class AbstractStorage implements Storage {
 
     public abstract void clear();
 
-    protected abstract boolean checkKey(Object key);
-
-    protected abstract Object searchKey(String uuid);
-
     protected abstract Resume getElement(Object key);
 
     protected abstract void addElement(Object key, Resume resume);
@@ -63,4 +26,40 @@ public abstract class AbstractStorage implements Storage {
     protected abstract void updateElement(Object key, Resume resume);
 
     protected abstract void removeElement(Object key);
+
+    public Resume get(String uuid) {
+        Object key = getExistCheckedSearchKey(uuid);
+        return getElement(key);
+    }
+
+    public void save(Resume resume) {
+        Object key = getNotExistCheckedSearchKey(resume.getUuid());
+        addElement(key, resume);
+    }
+
+    public void update(Resume resume) {
+        Object key = getExistCheckedSearchKey(resume.getUuid());
+        updateElement(key, resume);
+    }
+
+    public void delete(String uuid) {
+        Object key = getExistCheckedSearchKey(uuid);
+        removeElement(key);
+    }
+
+    private Object getExistCheckedSearchKey(String uud) {
+        Object key = searchKey(uud);
+        if (!checkKey(key)) {
+            throw new NotExistStorageException(uud);
+        }
+        return key;
+    }
+
+    private Object getNotExistCheckedSearchKey(String uud) {
+        Object key = searchKey(uud);
+        if (checkKey(key)) {
+            throw new ExistStorageException(uud);
+        }
+        return key;
+    }
 }
