@@ -11,13 +11,12 @@ public abstract class AbstractArrayStorageTest extends AbstractStorageTest {
         super(storage);
     }
 
-    @Override
     @Test(expected = StorageException.class)
     public void saveOverflow() {
         try {
             storage.clear();
             for (int i = 1; i <= AbstractArrayStorage.MAX_STORAGE_SIZE; i++) {
-                storage.save(new Resume("uuid" + i));
+                storage.save(new Resume("fullName_" + i));
             }
         } catch (StorageException e) {
             Assert.fail("Error before storage is filled");

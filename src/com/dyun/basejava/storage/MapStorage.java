@@ -23,10 +23,8 @@ public class MapStorage extends AbstractStorage {
      * @return array, contains only Resumes in storage (without null)
      */
     @Override
-    public List<Resume> getAllSorted() {
-        List<Resume> list = new ArrayList<>(storage.values());
-        list.sort(FULLNAME_COMPARATOR);
-        return list;
+    public List<Resume> getStorageAsList() {
+        return new ArrayList<>(storage.values());
     }
 
     @Override

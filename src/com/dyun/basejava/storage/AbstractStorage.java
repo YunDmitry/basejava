@@ -8,25 +8,11 @@ import java.util.Comparator;
 import java.util.List;
 
 public abstract class AbstractStorage implements Storage {
-    protected static final Comparator<Resume> FULLNAME_COMPARATOR = (o1, o2) -> {
-        if (o1.getFullName().equals(o2.getFullName())) {
-            return o1.getUuid().compareTo(o2.getUuid());
-        }
-        return o1.getFullName().compareTo(o2.getFullName());
-    };
-
-    public abstract int size();
+    protected static final Comparator<Resume> COMPARATOR = Comparator.comparing(Resume::getFullName).thenComparing(Resume::getUuid);
 
     protected abstract Object searchKey(String uuid);
 
     protected abstract boolean checkKey(Object key);
-
-    /**
-     * @return array, contains only Resumes in storage (without null)
-     */
-    public abstract List<Resume> getAllSorted();
-
-    public abstract void clear();
 
     protected abstract Resume getElement(Object key);
 
@@ -36,39 +22,52 @@ public abstract class AbstractStorage implements Storage {
 
     protected abstract void removeElement(Object key);
 
+    protected abstract List<Resume> getStorageAsList();
+
+    private Object getSearchKeyIfResumeExist(String uuid) {
+        Object searchKey = searchKey(uuid);
+        if (!checkKey(searchKey)) {
+            throw new NotExistStorageException(uuid);
+        }
+        return searchKey;
+    }
+
+    private Object getSearchKeyIfResumeNotExist(String uuid) {
+        Object searchKey = searchKey(uuid);
+        if (checkKey(searchKey)) {
+            throw new ExistStorageException(uuid);
+        }
+        return searchKey;
+    }
+
+    @Override
     public Resume get(String uuid) {
-        Object key = getExistCheckedSearchKey(uuid);
+        Object key = getSearchKeyIfResumeExist(uuid);
         return getElement(key);
     }
 
+    @Override
     public void save(Resume resume) {
-        Object key = getNotExistCheckedSearchKey(resume.getUuid());
+        Object key = getSearchKeyIfResumeNotExist(resume.getUuid());
         addElement(key, resume);
     }
 
+    @Override
     public void update(Resume resume) {
-        Object key = getExistCheckedSearchKey(resume.getUuid());
+        Object key = getSearchKeyIfResumeExist(resume.getUuid());
         updateElement(key, resume);
     }
 
+    @Override
     public void delete(String uuid) {
-        Object key = getExistCheckedSearchKey(uuid);
+        Object key = getSearchKeyIfResumeExist(uuid);
         removeElement(key);
     }
 
-    private Object getExistCheckedSearchKey(String uud) {
-        Object key = searchKey(uud);
-        if (!checkKey(key)) {
-            throw new NotExistStorageException(uud);
-        }
-        return key;
-    }
-
-    private Object getNotExistCheckedSearchKey(String uud) {
-        Object key = searchKey(uud);
-        if (checkKey(key)) {
-            throw new ExistStorageException(uud);
-        }
-        return key;
+    @Override
+    public List<Resume> getAllSorted() {
+        List<Resume> list = getStorageAsList();
+        list.sort(COMPARATOR);
+        return list;
     }
 }

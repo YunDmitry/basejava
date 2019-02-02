@@ -20,8 +20,7 @@ public class ListStorage extends AbstractStorage {
      * @return array, contains only Resumes in storage (without null)
      */
     @Override
-    public List<Resume> getAllSorted() {
-        storage.sort(FULLNAME_COMPARATOR);
+    public List<Resume> getStorageAsList() {
         return storage;
     }
 

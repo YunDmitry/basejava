@@ -2,7 +2,6 @@ package com.dyun.basejava.storage;
 
 import com.dyun.basejava.exception.ExistStorageException;
 import com.dyun.basejava.exception.NotExistStorageException;
-import com.dyun.basejava.exception.StorageException;
 import com.dyun.basejava.model.Resume;
 import org.junit.Assert;
 import org.junit.Before;
@@ -13,17 +12,13 @@ import java.util.Arrays;
 public abstract class AbstractStorageTest {
     protected Storage storage;
     private static final String UUID1 = "uuid1";
-    private static final String FULLNAME1 = "Sidorov Igor";
     private static final String UUID2 = "uuid2";
-    private static final String FULLNAME2 = "Sidorov Igor";
     private static final String UUID3 = "uuid3";
-    private static final String FULLNAME3 = "Ivanov Roman";
     private static final String UUID4 = "uuid4";
-    private static final String FULLNAME4 = "Romanova Svetlana";
-    private static final Resume RESUME_1 = new Resume(UUID1, FULLNAME1);
-    private static final Resume RESUME_2 = new Resume(UUID2, FULLNAME2);
-    private static final Resume RESUME_3 = new Resume(UUID3, FULLNAME3);
-    private static final Resume RESUME_4 = new Resume(UUID4, FULLNAME4);
+    private static final Resume RESUME_1 = new Resume(UUID1, "Sidorov Igor");
+    private static final Resume RESUME_2 = new Resume(UUID2, "Trophimov Ivan");
+    private static final Resume RESUME_3 = new Resume(UUID3, "Ivanov Roman");
+    private static final Resume RESUME_4 = new Resume(UUID4, "Romanova Svetlana");
 
     protected AbstractStorageTest(Storage storage) {
         this.storage = storage;
@@ -36,9 +31,6 @@ public abstract class AbstractStorageTest {
         storage.save(RESUME_3);
         storage.save(RESUME_2);
     }
-
-    @Test
-    public abstract void saveOverflow();
 
     @Test
     public void size() {
@@ -81,12 +73,8 @@ public abstract class AbstractStorageTest {
 
     @Test(expected = NotExistStorageException.class)
     public void delete() {
-        try {
-            storage.delete(UUID1);
-            Assert.assertEquals(2, storage.size());
-        } catch (StorageException e) {
-            Assert.fail("Error while deleting");
-        }
+        storage.delete(UUID1);
+        Assert.assertEquals(2, storage.size());
         storage.get(UUID1);
     }
 
@@ -97,8 +85,8 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void getAllSorted() {
-        Assert.assertEquals(storage.getAllSorted(), Arrays.asList(RESUME_3, RESUME_1, RESUME_2));
-        Assert.assertEquals(3, storage.getAllSorted().size());
+        Assert.assertEquals(Arrays.asList(RESUME_3, RESUME_1, RESUME_2), storage.getAllSorted());
+        Assert.assertEquals(3, storage.size());
     }
 
     @Test

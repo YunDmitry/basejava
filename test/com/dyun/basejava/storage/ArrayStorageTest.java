@@ -3,6 +3,6 @@ package com.dyun.basejava.storage;
 public class ArrayStorageTest extends AbstractArrayStorageTest {
 
     public ArrayStorageTest() {
-            super(new ArrayStorage());
+        super(new ArrayStorage());
     }
 }
