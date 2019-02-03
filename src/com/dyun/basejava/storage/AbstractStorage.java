@@ -24,22 +24,6 @@ public abstract class AbstractStorage implements Storage {
 
     protected abstract List<Resume> getStorageAsList();
 
-    private Object getSearchKeyIfResumeExist(String uuid) {
-        Object searchKey = searchKey(uuid);
-        if (!checkKey(searchKey)) {
-            throw new NotExistStorageException(uuid);
-        }
-        return searchKey;
-    }
-
-    private Object getSearchKeyIfResumeNotExist(String uuid) {
-        Object searchKey = searchKey(uuid);
-        if (checkKey(searchKey)) {
-            throw new ExistStorageException(uuid);
-        }
-        return searchKey;
-    }
-
     @Override
     public Resume get(String uuid) {
         Object key = getSearchKeyIfResumeExist(uuid);
@@ -69,5 +53,21 @@ public abstract class AbstractStorage implements Storage {
         List<Resume> list = getStorageAsList();
         list.sort(COMPARATOR);
         return list;
+    }
+
+    private Object getSearchKeyIfResumeExist(String uuid) {
+        Object searchKey = searchKey(uuid);
+        if (!checkKey(searchKey)) {
+            throw new NotExistStorageException(uuid);
+        }
+        return searchKey;
+    }
+
+    private Object getSearchKeyIfResumeNotExist(String uuid) {
+        Object searchKey = searchKey(uuid);
+        if (checkKey(searchKey)) {
+            throw new ExistStorageException(uuid);
+        }
+        return searchKey;
     }
 }
