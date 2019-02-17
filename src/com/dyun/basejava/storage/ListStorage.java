@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * ArrayList based storage for Resumes
  */
-public class ListStorage extends AbstractStorage {
+public class ListStorage extends AbstractStorage<Integer> {
     private List<Resume> storage = new ArrayList<>();
 
     @Override
@@ -30,7 +30,7 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected Object searchKey(String uuid) {
+    protected Integer searchKey(String uuid) {
         for (int i = 0; i < storage.size(); i++) {
             if (storage.get(i).getUuid().equals(uuid)) {
                 return i;
@@ -40,30 +40,27 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected boolean checkKey(Object key) {
-        return (Integer) key > -1;
+    protected boolean checkKey(Integer key) {
+        return key > -1;
     }
 
     @Override
-    protected Resume getElement(Object key) {
-        int index = (Integer) key;
-        return storage.get(index);
+    protected Resume getElement(Integer key) {
+        return storage.get(key);
     }
 
     @Override
-    protected void addElement(Object key, Resume resume) {
+    protected void addElement(Integer key, Resume resume) {
         storage.add(resume);
     }
 
     @Override
-    protected void updateElement(Object key, Resume resume) {
-        int index = (Integer) key;
-        storage.set(index, resume);
+    protected void updateElement(Integer key, Resume resume) {
+        storage.set(key, resume);
     }
 
     @Override
-    protected void removeElement(Object key) {
-        int index = (Integer) key;
-        storage.remove(index);
+    protected void removeElement(Integer key) {
+        storage.remove(key.intValue());
     }
 }

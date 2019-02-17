@@ -7,7 +7,7 @@ import java.util.*;
 /**
  * HashMap based storage for Resumes
  */
-public class MapResumeStorage extends AbstractStorage {
+public class MapResumeStorage extends AbstractStorage<Resume> {
 
     private Map<String, Resume> storage = new HashMap<>();
 
@@ -35,29 +35,28 @@ public class MapResumeStorage extends AbstractStorage {
     }
 
     @Override
-    protected boolean checkKey(Object key) {
+    protected boolean checkKey(Resume key) {
         return !Objects.isNull(key);
     }
 
     @Override
-    protected Resume getElement(Object key) {
-        return (Resume) key;
+    protected Resume getElement(Resume key) {
+        return key;
     }
 
     @Override
-    protected void addElement(Object key, Resume resume) {
+    protected void addElement(Resume key, Resume resume) {
         storage.put(resume.getUuid(), resume);
     }
 
     @Override
-    protected void updateElement(Object key, Resume resume) {
-        String uuid = ((Resume) key).getUuid();
+    protected void updateElement(Resume key, Resume resume) {
+        String uuid = key.getUuid();
         storage.put(uuid, resume);
     }
 
     @Override
-    protected void removeElement(Object key) {
-        Resume resume = (Resume) key;
-        storage.remove(resume.getUuid());
+    protected void removeElement(Resume key) {
+        storage.remove(key.getUuid());
     }
 }
