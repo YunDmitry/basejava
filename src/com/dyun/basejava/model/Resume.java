@@ -1,5 +1,8 @@
 package com.dyun.basejava.model;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -10,13 +13,16 @@ public class Resume {
     // Unique identifier
     private final String uuid;
     private String fullName;
+    private Map<ContactType, String> contacts = new HashMap<>();
+    private Map<SectionType, Section> sections = new HashMap<>();
 
     public Resume(String fullName) {
         this(UUID.randomUUID().toString(), fullName);
     }
 
     public Resume(String uuid, String fullName) {
-
+        Objects.requireNonNull(uuid, "uuid must not be null");
+        Objects.requireNonNull(fullName, "fullName must not be null");
         this.uuid = uuid;
         this.fullName = fullName;
     }
@@ -31,6 +37,22 @@ public class Resume {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+
+    public void setContact(ContactType type, String value) {
+        this.contacts.put(type, value);
+    }
+
+    public String getContact(ContactType type) {
+        return this.contacts.get(type);
+    }
+
+    public void setSection(SectionType type, Section section) {
+        this.sections.put(type, section);
+    }
+
+    public Section getSection(SectionType type) {
+        return this.sections.get(type);
     }
 
     @Override
