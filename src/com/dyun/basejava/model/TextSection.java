@@ -16,7 +16,22 @@ public class TextSection implements Section {
     }
 
     @Override
-    public void print() {
-        System.out.println(description);
+    public String toString() {
+        return description;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        TextSection that = (TextSection) o;
+
+        return description.equals(that.description);
+    }
+
+    @Override
+    public int hashCode() {
+        return description.hashCode();
     }
 }
