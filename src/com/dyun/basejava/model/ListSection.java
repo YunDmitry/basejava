@@ -1,11 +1,13 @@
 package com.dyun.basejava.model;
 
 import java.util.List;
+import java.util.Objects;
 
 public class ListSection implements Section {
     private List<String> list;
 
     public ListSection(List<String> list) {
+        Objects.requireNonNull(list, "list must not be null");
         this.list = list;
     }
 

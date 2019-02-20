@@ -2,11 +2,13 @@ package com.dyun.basejava.model;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 public class TableSection implements Section {
     private List<TableSectionElement> table;
 
     public TableSection(List<TableSectionElement> table) {
+        Objects.requireNonNull(table, "table must not be null");
         this.table = table;
     }
 

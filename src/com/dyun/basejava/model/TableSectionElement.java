@@ -2,6 +2,7 @@ package com.dyun.basejava.model;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 public class TableSectionElement {
     private final static DateTimeFormatter DATEFORMATTER = DateTimeFormatter.ofPattern("MM/yyyy");
@@ -12,6 +13,8 @@ public class TableSectionElement {
     private String description;
 
     public TableSectionElement(String title, LocalDate dateFrom, LocalDate dateTo, String name, String description) {
+        Objects.requireNonNull(dateFrom, "dateFrom must not be null");
+        Objects.requireNonNull(name, "name must not be null");
         this.title = title;
         this.dateFrom = dateFrom;
         this.dateTo = dateTo;

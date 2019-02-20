@@ -1,9 +1,12 @@
 package com.dyun.basejava.model;
 
+import java.util.Objects;
+
 public class TextSection implements Section {
     private String description;
 
     public TextSection(String description) {
+        Objects.requireNonNull(description, "description must not be null");
         this.description = description;
     }
 
