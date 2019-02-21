@@ -12,8 +12,8 @@ public class TableSection implements Section {
         this.table = table;
     }
 
-    public void addElement(String title, LocalDate dateFrom, LocalDate dateTo, String name, String description) {
-        table.add(new TableSectionElement(title, dateFrom, dateTo, name, description));
+    public void addElement(String title, String titleUrl, LocalDate dateFrom, LocalDate dateTo, String name, String description) {
+        table.add(new TableSectionElement(title, titleUrl, dateFrom, dateTo, name, description));
     }
 
     public List<TableSectionElement> getTable() {

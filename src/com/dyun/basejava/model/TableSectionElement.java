@@ -6,16 +6,18 @@ import java.util.Objects;
 
 public class TableSectionElement {
     private final static DateTimeFormatter DATEFORMATTER = DateTimeFormatter.ofPattern("MM/yyyy");
-    private String title;
+    private Link titleLink;
     private LocalDate dateFrom;
     private LocalDate dateTo;
     private String name;
     private String description;
 
-    public TableSectionElement(String title, LocalDate dateFrom, LocalDate dateTo, String name, String description) {
+    public TableSectionElement(String title, String titleUrl, LocalDate dateFrom, LocalDate dateTo, String name, String description) {
         Objects.requireNonNull(dateFrom, "dateFrom must not be null");
         Objects.requireNonNull(name, "name must not be null");
-        this.title = title;
+        if (title != null) {
+            this.titleLink = new Link(title, titleUrl);
+        }
         this.dateFrom = dateFrom;
         this.dateTo = dateTo;
         this.name = name;
@@ -25,8 +27,8 @@ public class TableSectionElement {
     @Override
     public String toString() {
         String titleText = "";
-        if (title != null) {
-            titleText = title + "\n";
+        if (titleLink != null) {
+            titleText = titleLink.getName() + (titleLink.getUrl() != null ? "(" + titleLink.getUrl() + ")" : "") + "\n";
         }
         String dateFromText = dateFrom.format(DATEFORMATTER);
         String dateToText = "Сейчас ";
@@ -51,19 +53,19 @@ public class TableSectionElement {
 
         TableSectionElement that = (TableSectionElement) o;
 
-        if (title != null ? !title.equals(that.title) : that.title != null) return false;
-        if (dateFrom != null ? !dateFrom.equals(that.dateFrom) : that.dateFrom != null) return false;
+        if (titleLink != null ? !titleLink.equals(that.titleLink) : that.titleLink != null) return false;
+        if (!dateFrom.equals(that.dateFrom)) return false;
         if (dateTo != null ? !dateTo.equals(that.dateTo) : that.dateTo != null) return false;
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
+        if (!name.equals(that.name)) return false;
         return description != null ? description.equals(that.description) : that.description == null;
     }
 
     @Override
     public int hashCode() {
-        int result = title != null ? title.hashCode() : 0;
-        result = 31 * result + (dateFrom != null ? dateFrom.hashCode() : 0);
+        int result = titleLink != null ? titleLink.hashCode() : 0;
+        result = 31 * result + dateFrom.hashCode();
         result = 31 * result + (dateTo != null ? dateTo.hashCode() : 0);
-        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + name.hashCode();
         result = 31 * result + (description != null ? description.hashCode() : 0);
         return result;
     }
