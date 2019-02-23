@@ -1,22 +1,17 @@
 package com.dyun.basejava.model;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
-public class TableSection implements Section {
-    private List<TableSectionElement> table;
+public class OrganizationSection implements Section {
+    private List<Organization> table;
 
-    public TableSection(List<TableSectionElement> table) {
+    public OrganizationSection(List<Organization> table) {
         Objects.requireNonNull(table, "table must not be null");
         this.table = table;
     }
 
-    public void addElement(String title, String titleUrl, LocalDate dateFrom, LocalDate dateTo, String name, String description) {
-        table.add(new TableSectionElement(title, titleUrl, dateFrom, dateTo, name, description));
-    }
-
-    public List<TableSectionElement> getTable() {
+    public List<Organization> getTable() {
         return table;
     }
 
@@ -24,7 +19,7 @@ public class TableSection implements Section {
     public String toString() {
         int i = 1;
         StringBuilder result = new StringBuilder();
-        for (TableSectionElement t : table) {
+        for (Organization t : table) {
             result.append(t.toString());
             if (i++ != table.size()) {
                 result.append("\n");
@@ -38,7 +33,7 @@ public class TableSection implements Section {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        TableSection that = (TableSection) o;
+        OrganizationSection that = (OrganizationSection) o;
 
         return table.equals(that.table);
     }
