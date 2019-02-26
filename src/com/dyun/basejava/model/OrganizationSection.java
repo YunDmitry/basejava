@@ -1,10 +1,15 @@
 package com.dyun.basejava.model;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
 public class OrganizationSection implements Section {
     private List<Organization> table;
+
+    public OrganizationSection(Organization... table) {
+        this(Arrays.asList(table));
+    }
 
     public OrganizationSection(List<Organization> table) {
         Objects.requireNonNull(table, "table must not be null");

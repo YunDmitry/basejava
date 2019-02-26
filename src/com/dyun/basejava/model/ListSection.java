@@ -1,10 +1,15 @@
 package com.dyun.basejava.model;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
 public class ListSection implements Section {
     private List<String> list;
+
+    public ListSection(String... list) {
+        this(Arrays.asList(list));
+    }
 
     public ListSection(List<String> list) {
         Objects.requireNonNull(list, "list must not be null");
@@ -13,10 +18,6 @@ public class ListSection implements Section {
 
     public List<String> getList() {
         return list;
-    }
-
-    public void addElement(String value) {
-        this.list.add(value);
     }
 
     @Override
