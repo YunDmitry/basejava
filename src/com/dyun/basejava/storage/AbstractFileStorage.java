@@ -42,7 +42,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
         try {
             return getFile(file);
         } catch (IOException e) {
-            throw new StorageException("IO Error", file.getName(), e);
+            throw new StorageException("File read error", file.getName(), e);
         }
     }
 
@@ -50,10 +50,10 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     protected void addElement(File file, Resume resume) {
         try {
             file.createNewFile();
-            writeFile(file, resume);
         } catch (IOException e) {
-            throw new StorageException("IO Error", file.getName(), e);
+            throw new StorageException("Couldn't create file " + file.getAbsolutePath(), file.getName(), e);
         }
+        updateElement(file, resume);
     }
 
     @Override
@@ -61,30 +61,28 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
         try {
             writeFile(file, resume);
         } catch (IOException e) {
-            throw new StorageException("IO Error", file.getName(), e);
+            throw new StorageException("File write error", file.getName(), e);
         }
     }
 
     @Override
     protected void removeElement(File file) {
-        try {
-            file.delete();
-        } catch (Exception e) {
-            throw new StorageException("Delete File Error", file.getName(), e);
+        if (!file.delete()) {
+            throw new StorageException("Delete File Error", file.getName());
         }
     }
 
     @Override
     protected List<Resume> getStorageAsList() {
-        List<Resume> result = new ArrayList<>();
         File[] list = directory.listFiles();
-        if (list != null) {
-            for (File file : list) {
-                result.add(getElement(file));
-            }
-            return result;
+        if (list == null) {
+            throw new StorageException("Directory read error", null);
         }
-        return null;
+        List<Resume> result = new ArrayList<>(list.length);
+        for (File file : list) {
+            result.add(getElement(file));
+        }
+        return result;
     }
 
     @Override
@@ -92,7 +90,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
         File[] list = directory.listFiles();
         if (list != null) {
             for (File file : list) {
-                file.delete();
+                removeElement(file);
             }
         }
     }
@@ -100,9 +98,9 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     @Override
     public int size() {
         String[] list = directory.list();
-        if (list != null) {
-            return list.length;
+        if (list == null) {
+            throw new StorageException("Directory read error", null);
         }
-        return 0;
+        return list.length;
     }
 }
