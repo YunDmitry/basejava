@@ -6,12 +6,13 @@ import com.dyun.basejava.model.Resume;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
 import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
 
 public abstract class AbstractStorageTest {
+    protected static final File STORAGE_DIR = new File("C:\\Users\\dyun\\IdeaProjects\\basejava\\storage");
     protected Storage storage;
     private static final String UUID1 = "uuid1";
     private static final String UUID2 = "uuid2";
@@ -65,7 +66,7 @@ public abstract class AbstractStorageTest {
     public void update() {
         Resume resumeNew = new Resume(UUID3, "New FullName");
         storage.update(resumeNew);
-        assertSame(resumeNew, storage.get(UUID3));
+        assertEquals(resumeNew, storage.get(UUID3));
     }
 
     @Test(expected = NotExistStorageException.class)

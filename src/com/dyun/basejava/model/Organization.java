@@ -2,6 +2,7 @@ package com.dyun.basejava.model;
 
 import com.dyun.basejava.util.DateUtil;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
@@ -12,7 +13,8 @@ import java.util.Objects;
 
 import static com.dyun.basejava.util.DateUtil.NOW;
 
-public class Organization {
+public class Organization implements Serializable {
+    private final static long serailversionUID = 1L;
 
     private Link titleLink;
     private List<OrganizationTimeEntry> list = new ArrayList<>();
@@ -63,7 +65,9 @@ public class Organization {
         return result;
     }
 
-    public static class OrganizationTimeEntry {
+    public static class OrganizationTimeEntry implements Serializable {
+        private final static long serailversionUID = 1L;
+
         private final static DateTimeFormatter DATEFORMATTER = DateTimeFormatter.ofPattern("MM/yyyy");
         private LocalDate dateFrom;
         private LocalDate dateTo;
@@ -71,11 +75,11 @@ public class Organization {
         private String description;
 
         public OrganizationTimeEntry(int dateFromYear, Month dateFromMonth, String name, String description) {
-            this(DateUtil.of(dateFromYear,dateFromMonth), NOW, name, description);
+            this(DateUtil.of(dateFromYear, dateFromMonth), NOW, name, description);
         }
 
         public OrganizationTimeEntry(int dateFromYear, Month dateFromMonth, int dateToYear, Month dateToMonth, String name, String description) {
-            this(DateUtil.of(dateFromYear,dateFromMonth), DateUtil.of(dateToYear,dateToMonth), name, description);
+            this(DateUtil.of(dateFromYear, dateFromMonth), DateUtil.of(dateToYear, dateToMonth), name, description);
         }
 
         public OrganizationTimeEntry(LocalDate dateFrom, LocalDate dateTo, String name, String description) {

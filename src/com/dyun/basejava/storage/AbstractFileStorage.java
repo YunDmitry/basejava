@@ -3,8 +3,7 @@ package com.dyun.basejava.storage;
 import com.dyun.basejava.exception.StorageException;
 import com.dyun.basejava.model.Resume;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -23,9 +22,9 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
         this.directory = directory;
     }
 
-    protected abstract void writeFile(File file, Resume resume) throws IOException;
+    protected abstract void doWrite(OutputStream outputStream, Resume resume) throws IOException;
 
-    protected abstract Resume getFile(File file) throws IOException;
+    protected abstract Resume doRead(InputStream inputStream) throws IOException;
 
     @Override
     protected File searchKey(String uuid) {
@@ -40,7 +39,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     @Override
     protected Resume getElement(File file) {
         try {
-            return getFile(file);
+            return doRead(new BufferedInputStream(new FileInputStream(file)));
         } catch (IOException e) {
             throw new StorageException("File read error", file.getName(), e);
         }
@@ -59,9 +58,9 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     @Override
     protected void updateElement(File file, Resume resume) {
         try {
-            writeFile(file, resume);
+            doWrite(new BufferedOutputStream(new FileOutputStream(file)), resume);
         } catch (IOException e) {
-            throw new StorageException("File write error", file.getName(), e);
+            throw new StorageException("File write error", resume.getUuid(), e);
         }
     }
 

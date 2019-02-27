@@ -1,5 +1,7 @@
 package com.dyun.basejava.model;
 
-public interface Section {
+import java.io.Serializable;
+
+public interface Section extends Serializable {
 
 }
