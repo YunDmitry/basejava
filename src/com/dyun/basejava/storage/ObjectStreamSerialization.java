@@ -5,21 +5,17 @@ import com.dyun.basejava.model.Resume;
 
 import java.io.*;
 
-public class ObjectStreamStorage extends AbstractFileStorage {
-
-    public ObjectStreamStorage(File directory) {
-        super(directory);
-    }
+public class ObjectStreamSerialization implements SerializationStrategy {
 
     @Override
-    protected void doWrite(OutputStream outputStream, Resume resume) throws IOException {
+    public void doWrite(OutputStream outputStream, Resume resume) throws IOException {
         try (ObjectOutputStream oos = new ObjectOutputStream(outputStream)) {
             oos.writeObject(resume);
         }
     }
 
     @Override
-    protected Resume doRead(InputStream inputStream) throws IOException {
+    public Resume doRead(InputStream inputStream) throws IOException {
         try (ObjectInputStream ois = new ObjectInputStream(inputStream)) {
             return (Resume) ois.readObject();
         } catch (ClassNotFoundException e) {
