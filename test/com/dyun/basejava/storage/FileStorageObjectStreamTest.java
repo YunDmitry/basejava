@@ -1,8 +1,8 @@
 package com.dyun.basejava.storage;
 
-public class FileObjectStreamStorageTest extends AbstractStorageTest {
+public class FileStorageObjectStreamTest extends AbstractStorageTest {
 
-    public FileObjectStreamStorageTest() {
+    public FileStorageObjectStreamTest() {
         super(new FileStorage(STORAGE_DIR_FILE, new ObjectStreamSerialization()));
     }
 }

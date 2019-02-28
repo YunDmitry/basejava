@@ -1,8 +1,8 @@
 package com.dyun.basejava.storage;
 
-public class PathObjectStreamStorageTest extends AbstractStorageTest {
+public class PathStorageObjectStreamTest extends AbstractStorageTest {
 
-    public PathObjectStreamStorageTest() {
+    public PathStorageObjectStreamTest() {
         super(new PathStorage(STORAGE_DIR, new ObjectStreamSerialization()));
     }
 }
