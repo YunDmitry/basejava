@@ -26,7 +26,7 @@ public class FileStorage extends AbstractStorage<File> {
     }
 
     @Override
-    protected File searchKey(String uuid) {
+    protected File getSearchKey(String uuid) {
         return new File(directory, uuid);
     }
 
