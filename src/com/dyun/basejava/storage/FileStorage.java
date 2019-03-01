@@ -2,6 +2,7 @@ package com.dyun.basejava.storage;
 
 import com.dyun.basejava.exception.StorageException;
 import com.dyun.basejava.model.Resume;
+import com.dyun.basejava.storage.serialization.SerializationStrategy;
 
 import java.io.*;
 import java.util.ArrayList;

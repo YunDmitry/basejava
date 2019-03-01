@@ -2,6 +2,7 @@ package com.dyun.basejava.storage;
 
 import com.dyun.basejava.exception.StorageException;
 import com.dyun.basejava.model.Resume;
+import com.dyun.basejava.storage.serialization.SerializationStrategy;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -13,7 +14,6 @@ import java.util.stream.Collectors;
 
 public class PathStorage extends AbstractStorage<Path> {
     private final Path directory;
-    private final String dir;
     private final SerializationStrategy serializationStrategy;
 
     protected PathStorage(String dir, SerializationStrategy serializationStrategy) {
@@ -23,13 +23,12 @@ public class PathStorage extends AbstractStorage<Path> {
             throw new IllegalArgumentException(dir + " is not directory or is not writable");
         }
         this.directory = directory;
-        this.dir = dir;
         this.serializationStrategy = serializationStrategy;
     }
 
     @Override
     protected Path searchKey(String uuid) {
-        return Paths.get(dir, uuid);
+        return Paths.get(directory.toAbsolutePath().toString(), uuid);
     }
 
     @Override

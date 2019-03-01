@@ -1,4 +1,4 @@
-package com.dyun.basejava.storage;
+package com.dyun.basejava.storage.serialization;
 
 import com.dyun.basejava.model.Resume;
 

@@ -6,7 +6,6 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -17,7 +16,7 @@ public class Organization implements Serializable {
     private final static long serailversionUID = 1L;
 
     private Link titleLink;
-    private List<OrganizationTimeEntry> list = new ArrayList<>();
+    private List<OrganizationTimeEntry> list;
 
     public Organization(String title, String titleUrl, OrganizationTimeEntry... list) {
         this(new Link(title, titleUrl), Arrays.asList(list));
