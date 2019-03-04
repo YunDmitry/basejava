@@ -191,6 +191,6 @@ public class ResumeTestData {
             }
         }
 
-        //new PathStorage("C:\\Users\\dyun\\IdeaProjects\\basejava\\storage", new XmlStreamSerialization()).save(resume);
+        //new PathStorage("C:\\Users\\dyun\\IdeaProjects\\basejava\\storage", new JsonStreamSerialization()).save(resume);
     }
 }
