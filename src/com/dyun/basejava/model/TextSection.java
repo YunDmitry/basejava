@@ -2,10 +2,13 @@ package com.dyun.basejava.model;
 
 import java.util.Objects;
 
-public class TextSection implements Section {
+public class TextSection extends Section {
     private final static long serailversionUID = 1L;
 
     private String description;
+
+    public TextSection() {
+    }
 
     public TextSection(String description) {
         Objects.requireNonNull(description, "description must not be null");

@@ -1,7 +1,11 @@
 package com.dyun.basejava.model;
 
 import com.dyun.basejava.util.DateUtil;
+import com.dyun.basejava.util.LocalDateAdapter;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.Month;
@@ -12,11 +16,15 @@ import java.util.Objects;
 
 import static com.dyun.basejava.util.DateUtil.NOW;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Organization implements Serializable {
     private final static long serailversionUID = 1L;
 
     private Link titleLink;
     private List<OrganizationTimeEntry> list;
+
+    public Organization() {
+    }
 
     public Organization(String title, String titleUrl, OrganizationTimeEntry... list) {
         this(new Link(title, titleUrl), Arrays.asList(list));
@@ -64,14 +72,20 @@ public class Organization implements Serializable {
         return result;
     }
 
+    @XmlAccessorType(XmlAccessType.FIELD)
     public static class OrganizationTimeEntry implements Serializable {
         private final static long serailversionUID = 1L;
-
         private final static DateTimeFormatter DATEFORMATTER = DateTimeFormatter.ofPattern("MM/yyyy");
+        @XmlJavaTypeAdapter(LocalDateAdapter.class)
         private LocalDate dateFrom;
+        @XmlJavaTypeAdapter(LocalDateAdapter.class)
         private LocalDate dateTo;
+
         private String name;
         private String description;
+
+        public OrganizationTimeEntry() {
+        }
 
         public OrganizationTimeEntry(int dateFromYear, Month dateFromMonth, String name, String description) {
             this(DateUtil.of(dateFromYear, dateFromMonth), NOW, name, description);

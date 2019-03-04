@@ -190,5 +190,7 @@ public class ResumeTestData {
                 System.out.println();
             }
         }
+
+        //new PathStorage("C:\\Users\\dyun\\IdeaProjects\\basejava\\storage", new XmlStreamSerialization()).save(resume);
     }
 }

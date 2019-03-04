@@ -4,10 +4,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-public class OrganizationSection implements Section {
+public class OrganizationSection extends Section {
     private final static long serailversionUID = 1L;
 
     private List<Organization> table;
+
+    public OrganizationSection() {
+    }
 
     public OrganizationSection(Organization... table) {
         this(Arrays.asList(table));
