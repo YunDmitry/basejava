@@ -37,6 +37,14 @@ public class Organization implements Serializable {
         this.list = list;
     }
 
+    public List<OrganizationTimeEntry> getList() {
+        return list;
+    }
+
+    public Link getTitleLink() {
+        return titleLink;
+    }
+
     @Override
     public String toString() {
         String titleText = "";
@@ -103,6 +111,22 @@ public class Organization implements Serializable {
             this.dateTo = dateTo;
             this.name = name;
             this.description = description;
+        }
+
+        public LocalDate getDateFrom() {
+            return dateFrom;
+        }
+
+        public LocalDate getDateTo() {
+            return dateTo;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getDescription() {
+            return description;
         }
 
         @Override

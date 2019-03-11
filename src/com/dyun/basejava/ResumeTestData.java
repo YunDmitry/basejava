@@ -6,7 +6,7 @@ import java.time.Month;
 
 public class ResumeTestData {
     public static void main(String[] args) {
-        Resume resume = new Resume("Григорий Кислин");
+        Resume resume = new Resume("UUID_TEST", "Григорий Кислин");
         System.out.println(resume.getFullName() + "\n");
 
         resume.setContact(ContactType.PHONE, "+7(921) 855-0482");
@@ -186,11 +186,15 @@ public class ResumeTestData {
             Section resumeSection = resume.getSection(sectionType);
             if (resumeSection != null) {
                 System.out.println(sectionType.getTitle());
-                System.out.println(resume.getSection(sectionType).toString());
+                System.out.println(resumeSection.toString());
                 System.out.println();
             }
         }
 
-        //new PathStorage("C:\\Users\\dyun\\IdeaProjects\\basejava\\storage", new JsonStreamSerialization()).save(resume);
+        //For testing full resume
+        //Storage storage = new PathStorage("C:\\Users\\dyun\\IdeaProjects\\basejava\\storage", new DataStreamSerialization());
+        //storage.clear();
+        //storage.save(resume);
+        //System.out.println(resume.equals(storage.get("UUID_TEST")));
     }
 }

@@ -52,8 +52,12 @@ public class Resume implements Serializable {
         this.contacts.put(type, value);
     }
 
+    public Map<ContactType, String> getContacts() {
+        return this.contacts;
+    }
+
     public String getContact(ContactType type) {
-        return this.contacts.get(type);
+        return this.contacts.get(type) != null ? this.contacts.get(type) : "";
     }
 
     public void setSection(SectionType type, Section section) {
@@ -62,6 +66,10 @@ public class Resume implements Serializable {
 
     public Section getSection(SectionType type) {
         return this.sections.get(type);
+    }
+
+    public Map<SectionType, Section> getSections() {
+        return this.sections;
     }
 
     @Override
