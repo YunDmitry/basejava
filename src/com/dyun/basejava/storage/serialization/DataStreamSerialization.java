@@ -4,9 +4,7 @@ import com.dyun.basejava.model.*;
 
 import java.io.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class DataStreamSerialization implements SerializationStrategy {
 
@@ -15,49 +13,39 @@ public class DataStreamSerialization implements SerializationStrategy {
         try (DataOutputStream dos = new DataOutputStream(outputStream)) {
             dos.writeUTF(resume.getUuid());
             dos.writeUTF(resume.getFullName());
-            dos.writeInt(resume.getContacts().size());
-            for (Map.Entry<ContactType, String> entry : resume.getContacts().entrySet()) {
+            writeForEach(dos, resume.getContacts().entrySet(), entry -> {
                 dos.writeUTF(entry.getKey().name());
                 dos.writeUTF(entry.getValue());
-            }
-            dos.writeInt(resume.getSections().size());
-            for (Map.Entry<SectionType, Section> entry : resume.getSections().entrySet()) {
-                dos.writeUTF(entry.getKey().name());
-                String sectionClass = entry.getValue().getClass().getName();
-                dos.writeUTF(sectionClass);
-                switch (sectionClass) {
-                    case ("com.dyun.basejava.model.TextSection"):
-                        TextSection textSection = (TextSection) entry.getValue();
-                        dos.writeUTF(textSection.getDescription());
+            });
+            writeForEach(dos, resume.getSections().entrySet(), entry -> {
+                SectionType sectionType = entry.getKey();
+                Section section = entry.getValue();
+                dos.writeUTF(sectionType.name());
+                switch (sectionType) {
+                    case PERSONAL:
+                    case OBJECTIVE:
+                        dos.writeUTF(((TextSection) section).getDescription());
                         break;
-                    case ("com.dyun.basejava.model.ListSection"):
-                        ListSection listSection = (ListSection) entry.getValue();
-                        List<String> list = listSection.getList();
-                        dos.writeInt(list.size());
-                        for (String str : list) {
-                            dos.writeUTF(str);
-                        }
+                    case ACHIVEMENT:
+                    case QUALIFICATIONS:
+                        writeForEach(dos, ((ListSection) section).getList(), dos::writeUTF);
                         break;
-                    case ("com.dyun.basejava.model.OrganizationSection"):
-                        OrganizationSection organizationSection = (OrganizationSection) entry.getValue();
-                        List<Organization> orgList = organizationSection.getTable();
-                        dos.writeInt(orgList.size());
-                        for (Organization org : orgList) {
-                            Link titleLink = org.getTitleLink();
+                    case EXPERIENCE:
+                    case EDUCATION:
+                        writeForEach(dos, ((OrganizationSection) section).getTable(), orgEntry -> {
+                            Link titleLink = orgEntry.getTitleLink();
                             dos.writeUTF(titleLink.getName());
                             dos.writeUTF(titleLink.getUrl() != null ? titleLink.getUrl() : "");
-                            List<Organization.OrganizationTimeEntry> orgTimeEntries = org.getList();
-                            dos.writeInt(orgTimeEntries.size());
-                            for (Organization.OrganizationTimeEntry orgTimeEntry : orgTimeEntries) {
+                            writeForEach(dos, orgEntry.getList(), orgTimeEntry -> {
                                 dos.writeUTF(orgTimeEntry.getDateFrom().toString());
                                 dos.writeUTF(orgTimeEntry.getDateTo().toString());
                                 dos.writeUTF(orgTimeEntry.getName());
                                 dos.writeUTF(orgTimeEntry.getDescription() != null ? orgTimeEntry.getDescription() : "");
-                            }
-                        }
+                            });
+                        });
                         break;
                 }
-            }
+            });
         }
     }
 
@@ -67,23 +55,20 @@ public class DataStreamSerialization implements SerializationStrategy {
             String uuid = dis.readUTF();
             String fullName = dis.readUTF();
             Resume resume = new Resume(uuid, fullName);
-
-            int contactsSize = dis.readInt();
-            for (int i = 0; i < contactsSize; i++) {
+            readForEach(dis, () -> {
                 ContactType contactType = ContactType.valueOf(dis.readUTF());
                 String contactValue = dis.readUTF();
                 resume.setContact(contactType, contactValue);
-            }
-
-            int sectionsSize = dis.readInt();
-            for (int i = 0; i < sectionsSize; i++) {
+            });
+            readForEach(dis, () -> {
                 SectionType sectionType = SectionType.valueOf(dis.readUTF());
-                String sectionClass = dis.readUTF();
-                switch (sectionClass) {
-                    case ("com.dyun.basejava.model.TextSection"):
+                switch (sectionType) {
+                    case PERSONAL:
+                    case OBJECTIVE:
                         resume.setSection(sectionType, new TextSection(dis.readUTF()));
                         break;
-                    case ("com.dyun.basejava.model.ListSection"):
+                    case ACHIVEMENT:
+                    case QUALIFICATIONS:
                         int listSize = dis.readInt();
                         List<String> list = new ArrayList<>(listSize);
                         for (int j = 0; j < listSize; j++) {
@@ -91,7 +76,8 @@ public class DataStreamSerialization implements SerializationStrategy {
                         }
                         resume.setSection(sectionType, new ListSection(list));
                         break;
-                    case ("com.dyun.basejava.model.OrganizationSection"):
+                    case EXPERIENCE:
+                    case EDUCATION:
                         int orgListSize = dis.readInt();
                         List<Organization> orgList = new ArrayList<>(orgListSize);
                         for (int j = 0; j < orgListSize; j++) {
@@ -113,8 +99,35 @@ public class DataStreamSerialization implements SerializationStrategy {
                         resume.setSection(sectionType, new OrganizationSection(orgList));
                         break;
                 }
-            }
+            });
             return resume;
+        }
+    }
+
+    private interface ConsumerException<T> {
+        void action(T t) throws IOException;
+    }
+
+    private <T> void writeForEach(DataOutputStream dos, Collection<T> collection, ConsumerException<T> action) throws IOException {
+        Objects.requireNonNull(dos, "dos must not be null");
+        Objects.requireNonNull(collection, "collection must not be null");
+        Objects.requireNonNull(action, "action must not be null");
+        dos.writeInt(collection.size());
+        for (T element : collection) {
+            action.action(element);
+        }
+    }
+
+    private interface ReaderException {
+        void read() throws IOException;
+    }
+
+    private void readForEach(DataInputStream dis, ReaderException action) throws IOException {
+        Objects.requireNonNull(dis, "dis must not be null");
+        Objects.requireNonNull(action, "action must not be null");
+        int size = dis.readInt();
+        for (int i = 0; i < size; i++) {
+            action.read();
         }
     }
 }
