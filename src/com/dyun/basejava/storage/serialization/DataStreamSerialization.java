@@ -69,33 +69,25 @@ public class DataStreamSerialization implements SerializationStrategy {
                         break;
                     case ACHIVEMENT:
                     case QUALIFICATIONS:
-                        int listSize = dis.readInt();
-                        List<String> list = new ArrayList<>(listSize);
-                        for (int j = 0; j < listSize; j++) {
-                            list.add(dis.readUTF());
-                        }
+                        List<String> list = readForEachList(dis, dis::readUTF);
                         resume.setSection(sectionType, new ListSection(list));
                         break;
                     case EXPERIENCE:
                     case EDUCATION:
-                        int orgListSize = dis.readInt();
-                        List<Organization> orgList = new ArrayList<>(orgListSize);
-                        for (int j = 0; j < orgListSize; j++) {
+                        List<Organization> orgList = readForEachList(dis, () -> {
                             String linkName = dis.readUTF();
                             String linkUrl = dis.readUTF();
                             Link link = new Link(linkName, !linkUrl.equals("") ? linkUrl : null);
-                            int orgTimeEntriesSize = dis.readInt();
-                            List<Organization.OrganizationTimeEntry> orgTimeEntries = new ArrayList<>(orgTimeEntriesSize);
-                            for (int k = 0; k < orgTimeEntriesSize; k++) {
+                            List<Organization.OrganizationTimeEntry> orgTimeEntries = readForEachList(dis, () -> {
                                 LocalDate dateFrom = LocalDate.parse(dis.readUTF());
                                 LocalDate dateTo = LocalDate.parse(dis.readUTF());
                                 String name = dis.readUTF();
                                 String description = dis.readUTF();
-                                orgTimeEntries.add(new Organization.OrganizationTimeEntry(
-                                        dateFrom, dateTo, name, !description.equals("") ? description : null));
-                            }
-                            orgList.add(new Organization(link, orgTimeEntries));
-                        }
+                                return new Organization.OrganizationTimeEntry(
+                                        dateFrom, dateTo, name, !description.equals("") ? description : null);
+                            });
+                            return new Organization(link, orgTimeEntries);
+                        });
                         resume.setSection(sectionType, new OrganizationSection(orgList));
                         break;
                 }
@@ -129,5 +121,20 @@ public class DataStreamSerialization implements SerializationStrategy {
         for (int i = 0; i < size; i++) {
             action.read();
         }
+    }
+
+    private interface ListReaderException<T> {
+        T read() throws IOException;
+    }
+
+    private <T> List<T> readForEachList(DataInputStream dis, ListReaderException<T> action) throws IOException {
+        Objects.requireNonNull(dis, "dis must not be null");
+        Objects.requireNonNull(action, "action must not be null");
+        int size = dis.readInt();
+        List<T> list = new ArrayList<>(size);
+        for (int i = 0; i < size; i++) {
+            list.add(action.read());
+        }
+        return list;
     }
 }

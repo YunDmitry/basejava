@@ -1,9 +1,6 @@
 package com.dyun.basejava;
 
 import com.dyun.basejava.model.*;
-import com.dyun.basejava.storage.PathStorage;
-import com.dyun.basejava.storage.Storage;
-import com.dyun.basejava.storage.serialization.DataStreamSerialization;
 
 import java.time.Month;
 
@@ -195,9 +192,9 @@ public class ResumeTestData {
         }
 
         //For testing full resume
-        Storage storage = new PathStorage("C:\\Users\\dyun\\IdeaProjects\\basejava\\storage", new DataStreamSerialization());
-        storage.clear();
-        storage.save(resume);
-        System.out.println(resume.equals(storage.get("UUID_TEST")));
+        //Storage storage = new PathStorage("C:\\Users\\dyun\\IdeaProjects\\basejava\\storage", new DataStreamSerialization());
+        //storage.clear();
+        //storage.save(resume);
+        //System.out.println(resume.equals(storage.get("UUID_TEST")));
     }
 }

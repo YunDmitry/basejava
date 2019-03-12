@@ -17,7 +17,7 @@ public class PathStorage extends AbstractStorage<Path> {
     private final Path directory;
     private final SerializationStrategy serializationStrategy;
 
-    public PathStorage(String dir, SerializationStrategy serializationStrategy) {
+    protected PathStorage(String dir, SerializationStrategy serializationStrategy) {
         Path directory = Paths.get(dir);
         Objects.requireNonNull(directory, "directory must not be null");
         if (!Files.isDirectory(directory) || !Files.isWritable(directory)) {
