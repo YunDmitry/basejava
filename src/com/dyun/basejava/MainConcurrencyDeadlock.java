@@ -5,40 +5,14 @@ public class MainConcurrencyDeadlock {
     private static final Object B = new Object();
 
     public static void main(String s[]) {
-        Thread threadDeadlock1 = new Thread(() -> {
-            synchronized (A) {
-                try {
-                    System.out.println("thread_deadlock1: Locked object A");
-                    A.wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                System.out.println("thread_deadlock1: Trying to lock object B...");
-                synchronized (B) {
-                    System.out.println("thread_deadlock1: Locked object B");
-                }
-            }
-        });
-
-        Thread threadDeadlock2 = new Thread(() -> {
-            synchronized (B) {
-                try {
-                    System.out.println("thread_deadlock2: Locked object B");
-                    B.wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                System.out.println("thread_deadlock2: Trying to lock object A...");
-                synchronized (A) {
-                    System.out.println("thread_deadlock2: Locked object A");
-                }
-            }
-        });
+        Thread threadDeadlock1 = threadLock(A, B);
+        Thread threadDeadlock2 = threadLock(B, A);
 
         threadDeadlock1.start();
         threadDeadlock2.start();
         try {
             Thread.sleep(2000);
+
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -48,5 +22,27 @@ public class MainConcurrencyDeadlock {
         synchronized (B) {
             B.notifyAll();
         }
+    }
+
+    private static Thread threadLock (Object first, Object second) {
+        return new Thread(() -> {
+            synchronized (first) {
+                try {
+                    System.out.println(Thread.currentThread().getName() + ": Locked object " + first);
+                    first.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println(Thread.currentThread().getName() + ": Trying to lock object " + second + "...");
+                synchronized (second) {
+                    try {
+                        System.out.println(Thread.currentThread().getName() + ": Locked object " + second);
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
     }
 }
