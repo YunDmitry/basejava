@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.IntStream;
 
 public class MainStream {
     public static void main(String[] args) {
@@ -16,8 +15,11 @@ public class MainStream {
     }
 
     private static int minValue(int[] values) {
-        IntStream intStream = Arrays.stream(values);
-        return intStream.distinct().sorted().reduce((s1, s2) -> s1 * 10 + s2).orElse(0);
+        return Arrays.stream(values)
+                .distinct()
+                .sorted()
+                .reduce((s1, s2) -> s1 * 10 + s2)
+                .orElse(0);
     }
 
     private static List<Integer> oddOrEven(List<Integer> integers) {
