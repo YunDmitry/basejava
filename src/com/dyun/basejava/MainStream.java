@@ -2,7 +2,6 @@ package com.dyun.basejava;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -25,12 +24,13 @@ public class MainStream {
 
     private static List<Integer> oddOrEven(List<Integer> integers) {
         AtomicInteger sum = new AtomicInteger();
-        Map<Boolean, List<Integer>> groups = integers.stream().collect(
-                Collectors.partitioningBy(
-                        item -> {
-                            sum.addAndGet(item);
-                            return item % 2 == 0;
-                        }));
-        return sum.get() % 2 == 0 ? groups.get(true) : groups.get(false);
+        return integers.stream()
+                .collect(
+                        Collectors.partitioningBy(
+                                item -> {
+                                    sum.addAndGet(item);
+                                    return item % 2 == 0;
+                                }))
+                .get(sum.get() % 2 == 0);
     }
 }
