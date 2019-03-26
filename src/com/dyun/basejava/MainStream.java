@@ -31,7 +31,6 @@ public class MainStream {
                             sum.addAndGet(item);
                             return item % 2 == 0;
                         }));
-
         return sum.get() % 2 == 0 ? groups.get(true) : groups.get(false);
     }
 }
