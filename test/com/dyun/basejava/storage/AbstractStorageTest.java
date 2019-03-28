@@ -1,5 +1,6 @@
 package com.dyun.basejava.storage;
 
+import com.dyun.basejava.Config;
 import com.dyun.basejava.exception.ExistStorageException;
 import com.dyun.basejava.exception.NotExistStorageException;
 import com.dyun.basejava.model.Resume;
@@ -11,7 +12,7 @@ import java.util.Arrays;
 import static org.junit.Assert.assertEquals;
 
 public abstract class AbstractStorageTest {
-    protected static final String STORAGE_DIR = "C:\\Users\\dyun\\IdeaProjects\\basejava\\storage";
+    protected static final String STORAGE_DIR = Config.get().getStorageDir();
     protected Storage storage;
     private static final String UUID1 = "uuid1";
     private static final String UUID2 = "uuid2";
