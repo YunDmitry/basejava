@@ -2,10 +2,8 @@ package com.dyun.basejava.storage;
 
 import com.dyun.basejava.exception.NotExistStorageException;
 import com.dyun.basejava.model.Resume;
-import com.dyun.basejava.sql.ConnectionFactory;
 import com.dyun.basejava.sql.SqlHelper;
 
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -13,10 +11,10 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class SqlStorage implements Storage {
-    private final ConnectionFactory connectionFactory;
+    private final SqlHelper sqlHelper;
 
     public SqlStorage(String dbUrl, String dbUser, String dbPassword) {
-        this.connectionFactory = () -> DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+        this.sqlHelper = new SqlHelper(dbUrl, dbUser, dbPassword);
     }
 
     @Override
@@ -27,7 +25,7 @@ public class SqlStorage implements Storage {
 //        } catch (SQLException e) {
 //            throw new StorageException(e);
 //        }
-        SqlHelper.Execute(connectionFactory, "DELETE FROM resume", PreparedStatement::execute);
+        sqlHelper.execute("DELETE FROM resume", PreparedStatement::execute);
     }
 
     @Override
@@ -43,7 +41,7 @@ public class SqlStorage implements Storage {
 //            }
 //            throw new StorageException(e);
 //        }
-        SqlHelper.Execute(connectionFactory, "INSERT INTO resume(uuid, full_name)  VALUES (?, ?)", resume.getUuid(), ps -> {
+        sqlHelper.execute("INSERT INTO resume(uuid, full_name)  VALUES (?, ?)", resume.getUuid(), ps -> {
             ps.setString(1, resume.getUuid());
             ps.setString(2, resume.getFullName());
             ps.execute();
@@ -62,7 +60,7 @@ public class SqlStorage implements Storage {
 //        } catch (SQLException e) {
 //            throw new StorageException(e);
 //        }
-        SqlHelper.Execute(connectionFactory, "UPDATE resume SET full_name = ? WHERE uuid = ?", ps -> {
+        sqlHelper.execute("UPDATE resume SET full_name = ? WHERE uuid = ?", ps -> {
             ps.setString(1, resume.getFullName());
             ps.setString(2, resume.getUuid());
             if (ps.executeUpdate() == 0) {
@@ -84,7 +82,7 @@ public class SqlStorage implements Storage {
 //        } catch (SQLException e) {
 //            throw new StorageException(e);
 //        }
-        return SqlHelper.ExecuteResult(connectionFactory, "SELECT * FROM resume r WHERE r.uuid = ?", ps -> {
+        return sqlHelper.executeResult("SELECT * FROM resume r WHERE r.uuid = ?", ps -> {
             ps.setString(1, uuid);
             final ResultSet rs = ps.executeQuery();
             if (!rs.next()) {
@@ -107,7 +105,7 @@ public class SqlStorage implements Storage {
 //        } catch (SQLException e) {
 //            throw new StorageException(e);
 //        }
-        SqlHelper.Execute(connectionFactory, "DELETE FROM resume WHERE uuid = ?", ps -> {
+        sqlHelper.execute("DELETE FROM resume WHERE uuid = ?", ps -> {
             ps.setString(1, uuid);
             if (ps.executeUpdate() == 0) {
                 throw new NotExistStorageException(uuid);
@@ -128,7 +126,7 @@ public class SqlStorage implements Storage {
 //        } catch (SQLException e) {
 //            throw new StorageException(e);
 //        }
-        return SqlHelper.ExecuteResult(connectionFactory, "SELECT * FROM resume ORDER BY full_name, uuid", ps -> {
+        return sqlHelper.executeResult("SELECT * FROM resume ORDER BY full_name, uuid", ps -> {
             List<Resume> result = new ArrayList<>();
             final ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -149,7 +147,7 @@ public class SqlStorage implements Storage {
 //            throw new StorageException(e);
 //        }
         AtomicInteger size = new AtomicInteger();
-        SqlHelper.Execute(connectionFactory, "SELECT COUNT(*) AS size FROM resume", ps -> {
+        sqlHelper.execute("SELECT COUNT(*) AS size FROM resume", ps -> {
             final ResultSet rs = ps.executeQuery();
             rs.next();
             size.set(rs.getInt("size"));

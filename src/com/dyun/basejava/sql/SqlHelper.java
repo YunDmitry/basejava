@@ -4,16 +4,23 @@ import com.dyun.basejava.exception.ExistStorageException;
 import com.dyun.basejava.exception.StorageException;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
 public class SqlHelper {
-    public static void Execute(ConnectionFactory connectionFactory, String sqlStatement, ConsumerSqlException<PreparedStatement> action) {
-        Execute(connectionFactory, sqlStatement, null, action);
+    private final ConnectionFactory connectionFactory;
+
+    public SqlHelper(String dbUrl, String dbUser, String dbPassword) {
+        this.connectionFactory = () -> DriverManager.getConnection(dbUrl, dbUser, dbPassword);
     }
 
-    public static void Execute(ConnectionFactory connectionFactory, String sqlStatement, String uuid, ConsumerSqlException<PreparedStatement> action) {
+    public void execute(String sqlStatement, ConsumerSqlException action) {
+        execute(sqlStatement, null, action);
+    }
+
+    public void execute(String sqlStatement, String uuid, ConsumerSqlException action) {
         try (Connection conn = connectionFactory.getConnection();
              PreparedStatement ps = conn.prepareStatement(sqlStatement)) {
             action.action(ps);
@@ -25,7 +32,7 @@ public class SqlHelper {
         }
     }
 
-    public static <T> List<T> ExecuteResult(ConnectionFactory connectionFactory, String sqlStatement, ConsumerResultSqlException<PreparedStatement, T> action) {
+    public <T> List<T> executeResult(String sqlStatement, ConsumerResultSqlException<T> action) {
         try (Connection conn = connectionFactory.getConnection();
              PreparedStatement ps = conn.prepareStatement(sqlStatement)) {
             return action.action(ps);
@@ -34,11 +41,11 @@ public class SqlHelper {
         }
     }
 
-    public interface ConsumerSqlException<T> {
-        void action(T t) throws SQLException;
+    public interface ConsumerSqlException {
+        void action(PreparedStatement ps) throws SQLException;
     }
 
-    public interface ConsumerResultSqlException<PreparedStatement, T> {
+    public interface ConsumerResultSqlException<T> {
         List<T> action(PreparedStatement ps) throws SQLException;
     }
 }
