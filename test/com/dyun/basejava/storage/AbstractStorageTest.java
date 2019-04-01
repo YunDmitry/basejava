@@ -8,16 +8,17 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
 
 public abstract class AbstractStorageTest {
     protected static final String STORAGE_DIR = Config.get().getStorageDir();
     protected Storage storage;
-    private static final String UUID1 = "uuid1";
-    private static final String UUID2 = "uuid2";
-    private static final String UUID3 = "uuid3";
-    private static final String UUID4 = "uuid4";
+    private static final String UUID1 = UUID.randomUUID().toString();
+    private static final String UUID2 = UUID.randomUUID().toString();
+    private static final String UUID3 = UUID.randomUUID().toString();
+    private static final String UUID4 = UUID.randomUUID().toString();
     private static final Resume RESUME_1 = new Resume(UUID1, "Sidorov Igor");
     private static final Resume RESUME_2 = new Resume(UUID2, "Trophimov Ivan");
     private static final Resume RESUME_3 = new Resume(UUID3, "Ivanov Roman");
