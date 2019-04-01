@@ -1,12 +1,17 @@
 package com.dyun.basejava;
 
-import com.dyun.basejava.model.*;
+import com.dyun.basejava.model.ContactType;
+import com.dyun.basejava.model.Resume;
+import com.dyun.basejava.storage.SqlStorage;
+import com.dyun.basejava.storage.Storage;
 
-import java.time.Month;
+import java.util.UUID;
 
 public class ResumeTestData {
+    private static final String UUID_TEST = UUID.randomUUID().toString();
+
     public static void main(String[] args) {
-        Resume resume = new Resume("UUID_TEST", "Григорий Кислин");
+        Resume resume = new Resume(UUID_TEST, "Григорий Кислин");
         System.out.println(resume.getFullName() + "\n");
 
         resume.setContact(ContactType.PHONE, "+7(921) 855-0482");
@@ -20,7 +25,7 @@ public class ResumeTestData {
             System.out.println(resume.getContact(contactType));
         }
         System.out.println();
-
+        /*
         resume.setSection(SectionType.OBJECTIVE, new TextSection("Ведущий стажировок и корпоративного обучения по " +
                 "Java Web и Enterprise технологиям"));
 
@@ -189,12 +194,13 @@ public class ResumeTestData {
                 System.out.println(resumeSection.toString());
                 System.out.println();
             }
-        }
+        }*/
 
         //For testing full resume
-        //Storage storage = new PathStorage("C:\\Users\\dyun\\IdeaProjects\\basejava\\storage", new DataStreamSerialization());
-        //storage.clear();
-        //storage.save(resume);
-        //System.out.println(resume.equals(storage.get("UUID_TEST")));
+        Storage storage = new SqlStorage(Config.get().getDbUrl(), Config.get().getDbUser(), Config.get().getDbPassword());
+        storage.clear();
+        storage.save(resume);
+        System.out.println(resume.getContacts());
+        System.out.println(resume.equals(storage.get(UUID_TEST)));
     }
 }
