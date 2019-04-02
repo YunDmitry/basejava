@@ -55,15 +55,6 @@ public class SqlStorage implements Storage {
             insertContacts(resume, conn);
             return null;
         });
-
-        sqlHelper.execute("UPDATE resume SET full_name = ? WHERE uuid = ?", ps -> {
-            ps.setString(1, resume.getFullName());
-            ps.setString(2, resume.getUuid());
-            if (ps.executeUpdate() == 0) {
-                throw new NotExistStorageException(resume.getUuid());
-            }
-            return null;
-        });
     }
 
     @Override
@@ -112,13 +103,21 @@ public class SqlStorage implements Storage {
                     final ResultSet rs = ps.executeQuery();
                     String lastCreated = "";
                     Resume resume = null;
-                    while (rs.next()) {
+                    boolean next = rs.next();
+                    while (next) {
                         String uuid = rs.getString("uuid");
                         if (!uuid.equals(lastCreated)) {
+                            if (!lastCreated.equals("")) {
+                                result.add(resume);
+                            }
                             resume = readResume(uuid, rs);
+                            lastCreated = uuid;
                         }
                         readContact(rs, resume);
-                        result.add(resume);
+                        next = rs.next();
+                        if (!next) {
+                            result.add(resume);
+                        }
                     }
                     return result;
                 });

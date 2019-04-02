@@ -3,6 +3,7 @@ package com.dyun.basejava.storage;
 import com.dyun.basejava.Config;
 import com.dyun.basejava.exception.ExistStorageException;
 import com.dyun.basejava.exception.NotExistStorageException;
+import com.dyun.basejava.model.ContactType;
 import com.dyun.basejava.model.Resume;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,8 +32,29 @@ public abstract class AbstractStorageTest {
     @Before
     public void setUp() throws Exception {
         storage.clear();
+        RESUME_1.setContact(ContactType.PHONE, "+7(111) 111-1111");
+        RESUME_1.setContact(ContactType.SKYPE, "Igor.Sidorov");
+        RESUME_1.setContact(ContactType.EMAIL, "isidorov@yandex.ru");
+        RESUME_1.setContact(ContactType.LINKEDIN, "https://www.linkedin.com/in/isidorov");
+        RESUME_1.setContact(ContactType.GITHUB, "https://github.com/isidorov");
+        RESUME_1.setContact(ContactType.STACKOVERFLOW, "https://stackoverflow.com/users/111111");
+        RESUME_1.setContact(ContactType.SITE, "https://isidorov.ru/");
         storage.save(RESUME_1);
+        RESUME_3.setContact(ContactType.PHONE, "+7(333) 333-3333");
+        RESUME_3.setContact(ContactType.SKYPE, "Roman.Ivanov");
+        RESUME_3.setContact(ContactType.EMAIL, "rivanov@yandex.ru");
+        RESUME_3.setContact(ContactType.LINKEDIN, "https://www.linkedin.com/in/rivanov");
+        RESUME_3.setContact(ContactType.GITHUB, "https://github.com/rivanov");
+        RESUME_3.setContact(ContactType.STACKOVERFLOW, "https://stackoverflow.com/users/333333");
+        RESUME_3.setContact(ContactType.SITE, "https://rivanov.ru/");
         storage.save(RESUME_3);
+        RESUME_2.setContact(ContactType.PHONE, "+7(222) 222-2222");
+        RESUME_2.setContact(ContactType.SKYPE, "Ivan.Trophimov");
+        RESUME_2.setContact(ContactType.EMAIL, "itrophimov@yandex.ru");
+        RESUME_2.setContact(ContactType.LINKEDIN, "https://www.linkedin.com/in/itrophimov");
+        RESUME_2.setContact(ContactType.GITHUB, "https://github.com/itrophimov");
+        RESUME_2.setContact(ContactType.STACKOVERFLOW, "https://stackoverflow.com/users/222222");
+        RESUME_2.setContact(ContactType.SITE, "https://itrophimov.ru/");
         storage.save(RESUME_2);
     }
 
