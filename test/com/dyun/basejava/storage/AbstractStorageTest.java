@@ -8,6 +8,7 @@ import com.dyun.basejava.model.Resume;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.UUID;
 
@@ -111,7 +112,7 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void getAllSorted() {
-        assertEquals(Arrays.asList(RESUME_3, RESUME_1, RESUME_2), storage.getAllSorted());
+        assertEquals(new ArrayList<>(Arrays.asList(RESUME_3, RESUME_1, RESUME_2)), storage.getAllSorted());
         assertEquals(3, storage.size());
     }
 

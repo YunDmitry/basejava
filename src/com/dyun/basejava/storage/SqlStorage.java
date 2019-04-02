@@ -1,6 +1,7 @@
 package com.dyun.basejava.storage;
 
 import com.dyun.basejava.exception.NotExistStorageException;
+import com.dyun.basejava.exception.StorageException;
 import com.dyun.basejava.model.ContactType;
 import com.dyun.basejava.model.Resume;
 import com.dyun.basejava.sql.SqlHelper;
@@ -10,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -99,27 +101,14 @@ public class SqlStorage implements Storage {
                         "         ON r.uuid = c.resume_uuid" +
                         "   ORDER BY r.full_name, r.uuid",
                 ps -> {
-                    List<Resume> result = new ArrayList<>();
+                    Map<String, Resume> map = new LinkedHashMap<>();
                     final ResultSet rs = ps.executeQuery();
-                    String lastCreated = "";
-                    Resume resume = null;
-                    boolean next = rs.next();
-                    while (next) {
+                    while (rs.next()) {
                         String uuid = rs.getString("uuid");
-                        if (!uuid.equals(lastCreated)) {
-                            if (!lastCreated.equals("")) {
-                                result.add(resume);
-                            }
-                            resume = readResume(uuid, rs);
-                            lastCreated = uuid;
-                        }
+                        final Resume resume = map.computeIfAbsent(uuid, k -> readResume(uuid, rs));
                         readContact(rs, resume);
-                        next = rs.next();
-                        if (!next) {
-                            result.add(resume);
-                        }
                     }
-                    return result;
+                    return new ArrayList<>(map.values());
                 });
     }
 
@@ -132,8 +121,12 @@ public class SqlStorage implements Storage {
         });
     }
 
-    private Resume readResume(String uuid, ResultSet rs) throws SQLException {
-        return new Resume(uuid, rs.getString("full_name"));
+    private Resume readResume(String uuid, ResultSet rs) {
+        try {
+            return new Resume(uuid, rs.getString("full_name"));
+        } catch (SQLException e) {
+            throw new StorageException(e);
+        }
     }
 
     private void readContact(ResultSet rs, Resume resume) throws SQLException {
