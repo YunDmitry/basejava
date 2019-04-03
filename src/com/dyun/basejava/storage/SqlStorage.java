@@ -1,7 +1,6 @@
 package com.dyun.basejava.storage;
 
 import com.dyun.basejava.exception.NotExistStorageException;
-import com.dyun.basejava.exception.StorageException;
 import com.dyun.basejava.model.ContactType;
 import com.dyun.basejava.model.Resume;
 import com.dyun.basejava.sql.SqlHelper;
@@ -73,7 +72,7 @@ public class SqlStorage implements Storage {
                     if (!rs.next()) {
                         throw new NotExistStorageException(uuid);
                     }
-                    Resume resume = readResume(uuid, rs);
+                    Resume resume = new Resume(uuid, rs.getString("full_name"));
                     do {
                         readContact(rs, resume);
                     } while (rs.next());
@@ -105,7 +104,8 @@ public class SqlStorage implements Storage {
                     final ResultSet rs = ps.executeQuery();
                     while (rs.next()) {
                         String uuid = rs.getString("uuid");
-                        final Resume resume = map.computeIfAbsent(uuid, k -> readResume(uuid, rs));
+                        String fullName = rs.getString("full_name");
+                        final Resume resume = map.computeIfAbsent(uuid, k -> new Resume(uuid, fullName));
                         readContact(rs, resume);
                     }
                     return new ArrayList<>(map.values());
@@ -119,14 +119,6 @@ public class SqlStorage implements Storage {
             rs.next();
             return rs.getInt("size");
         });
-    }
-
-    private Resume readResume(String uuid, ResultSet rs) {
-        try {
-            return new Resume(uuid, rs.getString("full_name"));
-        } catch (SQLException e) {
-            throw new StorageException(e);
-        }
     }
 
     private void readContact(ResultSet rs, Resume resume) throws SQLException {
