@@ -25,6 +25,21 @@ public class ResumeServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html; charset=UTF-8");
+        response.getWriter().write("<style>" +
+                "table {" +
+                "   font-family: arial, sans-serif;" +
+                "   width: 100%;" +
+                "}" +
+                "td, th {" +
+                "   border: 1px solid #dddddd;" +
+                "   text-align: left;" +
+                "   padding: 8px;" +
+                "}" +
+                "tr:nth-child(even) {" +
+                "   background-color: #dddddd;" +
+                "}" +
+                "</style>"
+        );
         final String uuid = request.getParameter("uuid");
 
         if (uuid != null) {
@@ -49,7 +64,7 @@ public class ResumeServlet extends HttpServlet {
         result.append("<table><tr><th>UUID</th><th>Full Name</th></tr>");
         String tabFooter = "</table>";
         for (Resume resume : list) {
-            result.append("<tr><td>" + resume.getUuid() + "</td><td>" + resume.getFullName() + "</td></tr>");
+            result.append("<tr><td>").append(resume.getUuid()).append("</td><td>").append(resume.getFullName()).append("</td></tr>");
         }
         result.append("</table>");
         return result.toString();
