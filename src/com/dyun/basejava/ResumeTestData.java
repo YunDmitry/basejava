@@ -1,7 +1,6 @@
 package com.dyun.basejava;
 
-import com.dyun.basejava.model.ContactType;
-import com.dyun.basejava.model.Resume;
+import com.dyun.basejava.model.*;
 import com.dyun.basejava.storage.SqlStorage;
 import com.dyun.basejava.storage.Storage;
 
@@ -25,7 +24,7 @@ public class ResumeTestData {
             System.out.println(resume.getContact(contactType));
         }
         System.out.println();
-        /*
+
         resume.setSection(SectionType.OBJECTIVE, new TextSection("Ведущий стажировок и корпоративного обучения по " +
                 "Java Web и Enterprise технологиям"));
 
@@ -73,7 +72,7 @@ public class ResumeTestData {
                 "Отличное знание и опыт применения концепций ООП, SOA, шаблонов проектрирования, " +
                         "архитектурных шаблонов, UML, функционального программирования",
                 "Родной русский, английский \"upper intermediate\""));
-
+        /*
         resume.setSection(SectionType.EXPERIENCE,
                 new OrganizationSection(
                         new Organization("Java Online Projects", "http://javaops.ru/",
@@ -201,6 +200,7 @@ public class ResumeTestData {
         storage.clear();
         storage.save(resume);
         System.out.println(resume.getContacts());
+        System.out.println(resume.getSections());
         System.out.println(resume.equals(storage.get(UUID_TEST)));
     }
 }
