@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class SqlStorage implements Storage {
     private final SqlHelper sqlHelper;
@@ -220,11 +221,7 @@ public class SqlStorage implements Storage {
                         break;
                     case ACHIVEMENT:
                     case QUALIFICATIONS:
-                        StringBuilder listValueResult = new StringBuilder();
-                        for (String listValue : ((ListSection) entry.getValue()).getList()) {
-                            listValueResult.append(listValue).append("\n");
-                        }
-                        ps.setString(2, listValueResult.toString());
+                        ps.setString(2, ((ListSection) entry.getValue()).getList().stream().collect(Collectors.joining("\n")));
                         break;
                 }
                 ps.setString(3, resume.getUuid());
