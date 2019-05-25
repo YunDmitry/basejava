@@ -11,6 +11,12 @@ public class SqlHelper {
     private final ConnectionFactory connectionFactory;
 
     public SqlHelper(String dbUrl, String dbUser, String dbPassword) {
+        try {
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException e) {
+            System.out.println("PostgreSQL JDBC Driver is not found. Include it in your library path ");
+            e.printStackTrace();
+        }
         this.connectionFactory = () -> DriverManager.getConnection(dbUrl, dbUser, dbPassword);
     }
 
