@@ -9,7 +9,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class SqlStorage implements Storage {
     private final SqlHelper sqlHelper;
@@ -63,43 +62,41 @@ public class SqlStorage implements Storage {
 
     @Override
     public Resume get(String uuid) {
-        Resume resume_result = sqlHelper.execute("" +
-                        "     SELECT * " +
-                        "       FROM resume r" +
-                        "      WHERE r.uuid = ?",
-                ps -> {
-                    ps.setString(1, uuid);
-                    final ResultSet rs = ps.executeQuery();
-                    if (!rs.next()) {
-                        throw new NotExistStorageException(uuid);
-                    }
-                    return new Resume(uuid, rs.getString("full_name"));
-                });
-        sqlHelper.execute("" +
-                        "     SELECT * " +
-                        "       FROM contact c" +
-                        "      WHERE resume_uuid = ?",
-                ps -> {
-                    ps.setString(1, uuid);
-                    final ResultSet rs = ps.executeQuery();
-                    while (rs.next()) {
-                        readContact(rs, resume_result);
-                    }
-                    return null;
-                });
-        sqlHelper.execute("" +
-                        "     SELECT * " +
-                        "       FROM section s" +
-                        "      WHERE resume_uuid = ?",
-                ps -> {
-                    ps.setString(1, uuid);
-                    final ResultSet rs = ps.executeQuery();
-                    while (rs.next()) {
-                        readSection(rs, resume_result);
-                    }
-                    return null;
-                });
-        return resume_result;
+        return sqlHelper.transactionalExecute(conn -> {
+            Resume resume;
+            try (PreparedStatement ps = conn.prepareStatement("" +
+                    "     SELECT * " +
+                    "       FROM resume r" +
+                    "      WHERE r.uuid = ?")) {
+                ps.setString(1, uuid);
+                final ResultSet rs = ps.executeQuery();
+                if (!rs.next()) {
+                    throw new NotExistStorageException(uuid);
+                }
+                resume = new Resume(uuid, rs.getString("full_name"));
+            }
+            try (PreparedStatement ps = conn.prepareStatement("" +
+                    "     SELECT * " +
+                    "       FROM contact c" +
+                    "      WHERE resume_uuid = ?")) {
+                ps.setString(1, uuid);
+                final ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    readContact(rs, resume);
+                }
+            }
+            try (PreparedStatement ps = conn.prepareStatement("" +
+                    "     SELECT * " +
+                    "       FROM section s" +
+                    "      WHERE resume_uuid = ?")) {
+                ps.setString(1, uuid);
+                final ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    readSection(rs, resume);
+                }
+            }
+            return resume;
+        });
     }
 
     @Override
@@ -116,8 +113,38 @@ public class SqlStorage implements Storage {
 
     @Override
     public List<Resume> getAllSorted() {
-        Map<String, Resume> map = new LinkedHashMap<>();
-        sqlHelper.execute("" +
+        return sqlHelper.transactionalExecute(conn -> {
+            Map<String, Resume> map = new LinkedHashMap<>();
+            try (PreparedStatement ps = conn.prepareStatement("" +
+                    "     SELECT * " +
+                    "       FROM resume r" +
+                    "   ORDER BY r.full_name, r.uuid")) {
+                final ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    String uuid = rs.getString("uuid");
+                    String fullName = rs.getString("full_name");
+                    map.put(uuid, new Resume(uuid, fullName));
+                }
+            }
+            try (PreparedStatement ps = conn.prepareStatement("" +
+                    "     SELECT * " +
+                    "       FROM contact c")) {
+                final ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    String resume_uuid = rs.getString("resume_uuid");
+                    readContact(rs, map.get(resume_uuid));
+                }
+            }
+            try (PreparedStatement ps = conn.prepareStatement("" +
+                    "     SELECT * " +
+                    "       FROM section s")) {
+                final ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    String resume_uuid = rs.getString("resume_uuid");
+                    readSection(rs, map.get(resume_uuid));
+                }
+            }
+        /*sqlHelper.execute("" +
                         "     SELECT * " +
                         "       FROM resume r" +
                         "   ORDER BY r.full_name, r.uuid",
@@ -151,9 +178,9 @@ public class SqlStorage implements Storage {
                         readSection(rs, map.get(resume_uuid));
                     }
                     return null;
-                });
-        return new ArrayList<>(map.values());
-
+                });*/
+            return new ArrayList<>(map.values());
+        });
     }
 
     @Override
@@ -221,7 +248,7 @@ public class SqlStorage implements Storage {
                         break;
                     case ACHIVEMENT:
                     case QUALIFICATIONS:
-                        ps.setString(2, ((ListSection) entry.getValue()).getList().stream().collect(Collectors.joining("\n")));
+                        ps.setString(2, String.join("\n", ((ListSection) entry.getValue()).getList()));
                         break;
                 }
                 ps.setString(3, resume.getUuid());
