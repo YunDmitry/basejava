@@ -1,7 +1,6 @@
 package com.dyun.basejava.web;
 
 import com.dyun.basejava.Config;
-import com.dyun.basejava.exception.NotExistStorageException;
 import com.dyun.basejava.model.Resume;
 import com.dyun.basejava.storage.SqlStorage;
 import com.dyun.basejava.storage.Storage;
@@ -11,7 +10,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ResumeServlet extends HttpServlet {
@@ -22,7 +20,10 @@ public class ResumeServlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setCharacterEncoding("UTF-8");
+        request.setAttribute("resumes", STORAGE.getAllSorted());
+        request.getRequestDispatcher("/WEB-INF/jsp/list.jsp").forward(request, response);
+
+        /*request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html; charset=UTF-8");
         response.getWriter().write("<style>" +
@@ -56,7 +57,7 @@ public class ResumeServlet extends HttpServlet {
             }
         } else {
             response.getWriter().write(makeTable(STORAGE.getAllSorted()));
-        }
+        }*/
     }
 
     private String makeTable(List<Resume> list) {

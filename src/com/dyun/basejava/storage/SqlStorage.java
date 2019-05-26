@@ -144,41 +144,6 @@ public class SqlStorage implements Storage {
                     readSection(rs, map.get(resume_uuid));
                 }
             }
-        /*sqlHelper.execute("" +
-                        "     SELECT * " +
-                        "       FROM resume r" +
-                        "   ORDER BY r.full_name, r.uuid",
-                ps -> {
-                    final ResultSet rs = ps.executeQuery();
-                    while (rs.next()) {
-                        String uuid = rs.getString("uuid");
-                        String fullName = rs.getString("full_name");
-                        map.put(uuid, new Resume(uuid, fullName));
-                    }
-                    return null;
-                });
-        sqlHelper.execute("" +
-                        "     SELECT * " +
-                        "       FROM contact c",
-                ps -> {
-                    final ResultSet rs = ps.executeQuery();
-                    while (rs.next()) {
-                        String resume_uuid = rs.getString("resume_uuid");
-                        readContact(rs, map.get(resume_uuid));
-                    }
-                    return null;
-                });
-        sqlHelper.execute("" +
-                        "     SELECT * " +
-                        "       FROM section s",
-                ps -> {
-                    final ResultSet rs = ps.executeQuery();
-                    while (rs.next()) {
-                        String resume_uuid = rs.getString("resume_uuid");
-                        readSection(rs, map.get(resume_uuid));
-                    }
-                    return null;
-                });*/
             return new ArrayList<>(map.values());
         });
     }
