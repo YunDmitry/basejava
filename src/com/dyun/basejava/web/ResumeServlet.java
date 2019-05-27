@@ -20,8 +20,14 @@ public class ResumeServlet extends HttpServlet {
         String fullName = request.getParameter("fullName");
 
         Resume resume;
-        resume = STORAGE.get(uuid);
-        resume.setFullName(fullName);
+        boolean addFlg = (uuid == null || uuid.length() == 0);
+        if (addFlg) {
+            resume = new Resume(fullName);
+            resume.setFullName(fullName);
+        } else {
+            resume = STORAGE.get(uuid);
+            resume.setFullName(fullName);
+        }
 
         for (ContactType type : ContactType.values()) {
             String value = request.getParameter(type.name());
@@ -50,7 +56,11 @@ public class ResumeServlet extends HttpServlet {
             }
         }
 
-        STORAGE.update(resume);
+        if (addFlg) {
+            STORAGE.save(resume);
+        } else {
+            STORAGE.update(resume);
+        }
         response.sendRedirect("resume");
     }
 
@@ -62,16 +72,21 @@ public class ResumeServlet extends HttpServlet {
             request.getRequestDispatcher("/WEB-INF/jsp/list.jsp").forward(request, response);
             return;
         }
-        Resume resume = null;
+        Resume resume;
         switch (action) {
             case "delete":
                 STORAGE.delete(uuid);
+                response.sendRedirect("resume");
+                return;
+            case "clear":
+                STORAGE.clear();
                 response.sendRedirect("resume");
                 return;
             case "view":
                 resume = STORAGE.get(uuid);
                 break;
             case "add":
+                resume = new Resume();
                 break;
             case "edit":
                 resume = STORAGE.get(uuid);

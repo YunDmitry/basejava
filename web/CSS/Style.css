@@ -3,12 +3,24 @@ table {
     width: 100%;
 }
 
-td, th {
-    border: 1px solid #dddddd;
+th {
+    border: none;
+    text-align: left;
+    padding: 8px;
+    background-color: lightgray;
+}
+
+td {
+    border: none;
     text-align: left;
     padding: 8px;
 }
 
-tr:nth-child(even) {
-    background-color: #dddddd;
+.ActionButton {
+    text-align: center;
+}
+
+.ActionButtonClear {
+    text-align: center;
+    filter: saturate(5);
 }

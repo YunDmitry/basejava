@@ -16,19 +16,22 @@
         <tr>
             <th>Имя</th>
             <th>Email</th>
-            <th></th>
-            <th></th>
+            <th>Телефон</th>
+            <th class="ActionButtonClear"><a href="resume?action=clear"><img src="img/delete.png" alt="Clear"></a></th>
+            <th class="ActionButton"><a href="resume?action=add"><img src="img/add.png" alt="Add"></a></th>
         </tr>
         <c:forEach items="${resumes}" var="resume">
             <jsp:useBean id="resume" type="com.dyun.basejava.model.Resume"/>
             <tr>
                 <td><a href="resume?uuid=${resume.uuid}&action=view">${resume.fullName}</a></td>
                 <td><%=ContactType.EMAIL.toHtml(resume.getContact(ContactType.EMAIL))%></td>
-                <td><a href="resume?uuid=${resume.uuid}&action=delete"><img src="img/delete.png" alt="Delete"></a></td>
-                <td><a href="resume?uuid=${resume.uuid}&action=edit"><img src="img/pencil.png" alt="Edit"></a></td>
+                <td><%=resume.getContact(ContactType.PHONE)%></td>
+                <td class="ActionButton"><a href="resume?uuid=${resume.uuid}&action=delete"><img src="img/delete.png" alt="Delete"></a></td>
+                <td class="ActionButton"><a href="resume?uuid=${resume.uuid}&action=edit"><img src="img/pencil.png" alt="Edit"></a></td>
             </tr>
         </c:forEach>
     </table>
+    <br>
 </section>
 <jsp:include page="fragments/footer.jsp"/>
 </body>
