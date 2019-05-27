@@ -30,7 +30,7 @@ public class ListSection extends Section {
         int i = 1;
         StringBuilder result = new StringBuilder();
         for (String str : list) {
-            result.append(" * ").append(str);
+            result/*.append(" * ")*/.append(str);
             if (i++ != list.size()) {
                 result.append("\n");
             }

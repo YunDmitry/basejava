@@ -1,8 +1,7 @@
 package com.dyun.basejava.web;
 
 import com.dyun.basejava.Config;
-import com.dyun.basejava.model.ContactType;
-import com.dyun.basejava.model.Resume;
+import com.dyun.basejava.model.*;
 import com.dyun.basejava.storage.SqlStorage;
 import com.dyun.basejava.storage.Storage;
 
@@ -32,6 +31,25 @@ public class ResumeServlet extends HttpServlet {
                 resume.getContacts().remove(type);
             }
         }
+
+        for (SectionType type : SectionType.values()) {
+            String value = request.getParameter(type.name());
+            if (value != null && value.trim().length() > 0) {
+                switch (type) {
+                    case OBJECTIVE:
+                    case PERSONAL:
+                        resume.setSection(type, new TextSection(value));
+                        break;
+                    case ACHIVEMENT:
+                    case QUALIFICATIONS:
+                        resume.setSection(type, new ListSection(value.split("\\n")));
+                        break;
+                }
+            } else {
+                resume.getSections().remove(type);
+            }
+        }
+
         STORAGE.update(resume);
         response.sendRedirect("resume");
     }
