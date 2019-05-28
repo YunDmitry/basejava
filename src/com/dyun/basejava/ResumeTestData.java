@@ -4,6 +4,7 @@ import com.dyun.basejava.model.*;
 import com.dyun.basejava.storage.SqlStorage;
 import com.dyun.basejava.storage.Storage;
 
+import java.time.Month;
 import java.util.UUID;
 
 public class ResumeTestData {
@@ -72,7 +73,7 @@ public class ResumeTestData {
                 "Отличное знание и опыт применения концепций ООП, SOA, шаблонов проектрирования, " +
                         "архитектурных шаблонов, UML, функционального программирования",
                 "Родной русский, английский \"upper intermediate\""));
-        /*
+
         resume.setSection(SectionType.EXPERIENCE,
                 new OrganizationSection(
                         new Organization("Java Online Projects", "http://javaops.ru/",
@@ -193,7 +194,7 @@ public class ResumeTestData {
                 System.out.println(resumeSection.toString());
                 System.out.println();
             }
-        }*/
+        }
 
         //For testing full resume
         Storage storage = new SqlStorage(Config.get().getDbUrl(), Config.get().getDbUser(), Config.get().getDbPassword());
