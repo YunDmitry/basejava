@@ -27,15 +27,7 @@ public class ListSection extends Section {
 
     @Override
     public String toString() {
-        int i = 1;
-        StringBuilder result = new StringBuilder();
-        for (String str : list) {
-            result/*.append(" * ")*/.append(str);
-            if (i++ != list.size()) {
-                result.append("\n");
-            }
-        }
-        return result.toString();
+        return String.join("\n", list);
     }
 
     @Override

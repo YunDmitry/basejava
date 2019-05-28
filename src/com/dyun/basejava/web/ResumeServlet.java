@@ -5,6 +5,7 @@ import com.dyun.basejava.model.*;
 import com.dyun.basejava.storage.SqlStorage;
 import com.dyun.basejava.storage.Storage;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -12,7 +13,13 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class ResumeServlet extends HttpServlet {
-    private static final Storage STORAGE = new SqlStorage(Config.get().getDbUrl(), Config.get().getDbUser(), Config.get().getDbPassword());
+    private Storage storage;
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        storage = new SqlStorage(Config.get().getDbUrl(), Config.get().getDbUser(), Config.get().getDbPassword());
+    }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
@@ -25,7 +32,7 @@ public class ResumeServlet extends HttpServlet {
             resume = new Resume(fullName);
             resume.setFullName(fullName);
         } else {
-            resume = STORAGE.get(uuid);
+            resume = storage.get(uuid);
             resume.setFullName(fullName);
         }
 
@@ -57,9 +64,9 @@ public class ResumeServlet extends HttpServlet {
         }
 
         if (addFlg) {
-            STORAGE.save(resume);
+            storage.save(resume);
         } else {
-            STORAGE.update(resume);
+            storage.update(resume);
         }
         response.sendRedirect("resume");
     }
@@ -68,28 +75,28 @@ public class ResumeServlet extends HttpServlet {
         String uuid = request.getParameter("uuid");
         String action = request.getParameter("action");
         if (action == null) {
-            request.setAttribute("resumes", STORAGE.getAllSorted());
+            request.setAttribute("resumes", storage.getAllSorted());
             request.getRequestDispatcher("/WEB-INF/jsp/list.jsp").forward(request, response);
             return;
         }
         Resume resume;
         switch (action) {
             case "delete":
-                STORAGE.delete(uuid);
+                storage.delete(uuid);
                 response.sendRedirect("resume");
                 return;
             case "clear":
-                STORAGE.clear();
+                storage.clear();
                 response.sendRedirect("resume");
                 return;
             case "view":
-                resume = STORAGE.get(uuid);
+                resume = storage.get(uuid);
                 break;
             case "add":
                 resume = new Resume();
                 break;
             case "edit":
-                resume = STORAGE.get(uuid);
+                resume = storage.get(uuid);
                 break;
             default:
                 throw new IllegalArgumentException("Action " + action + " is illegal");
