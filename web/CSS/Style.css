@@ -24,3 +24,7 @@ td {
     text-align: center;
     filter: saturate(5);
 }
+
+ul {
+    list-style-type: none;
+}

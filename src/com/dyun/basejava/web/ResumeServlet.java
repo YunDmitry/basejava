@@ -11,6 +11,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ResumeServlet extends HttpServlet {
     private Storage storage;
@@ -56,6 +59,30 @@ public class ResumeServlet extends HttpServlet {
                     case ACHIVEMENT:
                     case QUALIFICATIONS:
                         resume.setSection(type, new ListSection(value.split("\\n")));
+                        break;
+                    case EDUCATION:
+                    case EXPERIENCE:
+                        final String[] orgIds = request.getParameterValues(type + "OrganizationId");
+                        final String[] orgNames = request.getParameterValues(type + "OrganizationName");
+                        final String[] orgUrls = request.getParameterValues(type + "OrganizationUrl");
+                        List<Organization> list = new ArrayList<>();
+                        if (orgIds != null && orgIds.length > 0) {
+                            for (int i = 0; i < orgIds.length; i++) {
+                                final String[] posDateFrom = request.getParameterValues(type + orgIds[i] + "PositionFrom");
+                                final String[] posDateTo = request.getParameterValues(type + orgIds[i] + "PositionTo");
+                                final String[] posName = request.getParameterValues(type + orgIds[i] + "PositionName");
+                                final String[] posDescription = request.getParameterValues(type + orgIds[i] + "PositionDescription");
+                                List<Organization.OrganizationTimeEntry> listPos = new ArrayList<>();
+                                for (int j = 0; j < posDateFrom.length; j++) {
+                                    listPos.add(new Organization.OrganizationTimeEntry(LocalDate.parse(posDateFrom[j]), LocalDate.parse(posDateTo[j]), posName[j], posDescription[j]));
+                                }
+                                list.add(new Organization(new Link(orgNames[i], orgUrls[i]), listPos));
+                                resume.setSection(type, new OrganizationSection(list));
+                            }
+                        } else {
+                            list.clear();
+                            resume.getSections().remove(type);
+                        }
                         break;
                 }
             } else {

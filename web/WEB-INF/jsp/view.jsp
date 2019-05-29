@@ -1,4 +1,5 @@
 <%@ page import="com.dyun.basejava.model.ListSection" %>
+<%@ page import="com.dyun.basejava.model.OrganizationSection" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
@@ -34,6 +35,17 @@
                     <c:when test="${sectionType=='ACHIVEMENT' || sectionType=='QUALIFICATIONS'}">
                         <c:forEach var="item" items="<%=((ListSection) sectionEntry.getValue()).getList()%>">
                             <li>${item}</li>
+                        </c:forEach>
+                    </c:when>
+                    <c:when test="${sectionType=='EXPERIENCE' || sectionType=='EDUCATION'}">
+                        <c:forEach var="item" items="<%=((OrganizationSection) sectionEntry.getValue()).getTable()%>">
+                            <li>${item.titleLink.name} (${item.titleLink.url})
+                                <ul>
+                                    <c:forEach var="entry" items="${item.list}">
+                                        <li>${entry.toString()}</li>
+                                    </c:forEach>
+                                </ul>
+                            </li>
                         </c:forEach>
                     </c:when>
                 </c:choose>

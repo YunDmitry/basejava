@@ -144,7 +144,7 @@ public class Organization implements Serializable {
             if (description != null) {
                 descriptionText = "\n                     " + description;
             }
-            return dateFromText + " - " + dateToText + "    " + nameText + descriptionText;
+            return dateFromText + " - " + dateToText + "    " + nameText + "    " + descriptionText;
         }
 
         @Override
