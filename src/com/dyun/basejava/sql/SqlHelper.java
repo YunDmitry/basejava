@@ -17,6 +17,7 @@ public class SqlHelper {
             System.out.println("PostgreSQL JDBC Driver is not found. Include it in your library path ");
             e.printStackTrace();
         }
+
         this.connectionFactory = () -> DriverManager.getConnection(dbUrl, dbUser, dbPassword);
     }
 
